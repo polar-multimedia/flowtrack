@@ -70,27 +70,18 @@ body {
   overflow: hidden;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  padding: 0 0 40px;
+  justify-content: center;
+  padding: 40px 0;
+  background: var(--dark);
 }
 .auth-bg {
   position: absolute;
   inset: 0;
-  background-image: url('Chica_Ctech.png');
-  background-size: cover;
-  background-position: center top;
+  background: radial-gradient(ellipse at 50% 30%, rgba(233,30,140,0.18) 0%, transparent 70%),
+              radial-gradient(ellipse at 80% 80%, rgba(78,203,202,0.10) 0%, transparent 60%);
   z-index: 0;
 }
-.auth-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom,
-    rgba(13,0,16,0.25) 0%,
-    rgba(13,0,16,0.55) 45%,
-    rgba(13,0,16,0.97) 75%,
-    var(--dark) 100%);
-}
+.auth-bg::after { display: none; }
 .auth-content {
   position: relative;
   z-index: 1;
@@ -99,11 +90,11 @@ body {
 }
 .auth-logo-wrap {
   text-align: center;
-  margin-bottom: 4px;
+  margin-bottom: 20px;
 }
 .auth-logo-wrap img {
-  height: 44px;
-  filter: drop-shadow(0 0 10px var(--pink-glow)) brightness(1.1);
+  height: 90px;
+  filter: drop-shadow(0 0 24px var(--pink-glow)) brightness(1.15);
 }
 .auth-headline {
   font-size: 28px;
