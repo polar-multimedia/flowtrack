@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MenoTrack C-Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+<style>
+:root {
+  --pink:        #E91E8C;
+  --pink-mid:    #D4177F;
+  --pink-light:  #FF69B4;
+  --pink-pale:   #FFD6EC;
+  --pink-bg:     rgba(233,30,140,0.12);
+  --pink-glow:   rgba(233,30,140,0.28);
+  --teal:        #4ECBCA;
+  --teal-dark:   #3aadac;
+  --teal-bg:     rgba(78,203,202,0.15);
+  --dark:        #0d0010;
+  --dark-2:      #1a0025;
+  --dark-card:   rgba(255,255,255,0.07);
+  --dark-card-h: rgba(255,255,255,0.11);
+  --border:      rgba(233,30,140,0.22);
+  --border-w:    rgba(255,255,255,0.10);
+  --text:        #ffffff;
+  --text-muted:  rgba(255,255,255,0.60);
+  --text-soft:   rgba(255,255,255,0.82);
+  --radius:      16px;
+  --radius-sm:   10px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Lexend', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── LOADING ── */
+#loadingScreen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: var(--dark);
+}
+.logo-load { height: 56px; filter: drop-shadow(0 0 16px var(--pink-glow)); }
+.spinner { width: 32px; height: 32px; border: 3px solid rgba(233,30,140,0.25); border-top-color: var(--pink); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.load-text { font-size: 12px; color: var(--text-muted); letter-spacing: 1px; }
+
+/* ── AUTH ── */
+#authScreen {
+  display: none;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 0 40px;
+}
+.auth-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('Chica_Ctech.png');
+  background-size: cover;
+  background-position: center top;
+  z-index: 0;
+}
+.auth-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+    rgba(13,0,16,0.25) 0%,
+    rgba(13,0,16,0.55) 45%,
+    rgba(13,0,16,0.97) 75%,
+    var(--dark) 100%);
+}
+.auth-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 0 20px;
+}
+.auth-logo-wrap {
+  text-align: center;
+  margin-bottom: 4px;
+}
+.auth-logo-wrap img {
+  height: 44px;
+  filter: drop-shadow(0 0 10px var(--pink-glow)) brightness(1.1);
+}
+.auth-headline {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+.auth-headline em { color: var(--pink); font-style: normal; }
+.auth-sub {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+.auth-card {
+  background: rgba(20, 0, 30, 0.82);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 22px 20px 20px;
+}
+.auth-tabs {
+  display: flex;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 18px;
+}
+.auth-tab {
+  flex: 1; border: none; background: none;
+  font-family: 'Lexend', sans-serif; font-size: 13px; font-weight: 500;
+  color: var(--text-muted); padding: 8px; border-radius: 8px; cursor: pointer; transition: all 0.2s;
+}
+.auth-tab.active { background: var(--pink); color: white; font-weight: 600; }
+.auth-field { margin-bottom: 12px; }
+.auth-field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.auth-field input, .auth-field select {
+  width: 100%; background: rgba(255,255,255,0.08); border: 1px solid var(--border-w);
+  border-radius: 10px; padding: 11px 14px; font-family: 'Lexend', sans-serif;
+  font-size: 14px; color: white; outline: none; transition: border-color 0.2s;
+}
+.auth-field input::placeholder { color: rgba(255,255,255,0.3); }
+.auth-field input:focus, .auth-field select:focus { border-color: var(--pink); background: rgba(233,30,140,0.10); }
+.auth-field select option { background: var(--dark-2); color: white; }
+.btn-auth {
+  width: 100%; background: var(--pink); color: white; border: none;
+  border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 700;
+  font-family: 'Lexend', sans-serif; cursor: pointer; margin-top: 4px;
+  box-shadow: 0 4px 20px var(--pink-glow); transition: opacity 0.2s;
+}
+.btn-auth:hover { opacity: 0.9; }
+.auth-error { font-size: 12px; color: #ff8fb0; text-align: center; margin-top: 10px; min-height: 18px; }
+.auth-disclaimer { font-size: 10px; color: rgba(255,255,255,0.35); text-align: center; margin-top: 16px; line-height: 1.5; }
+
+/* ── APP ── */
+#appScreen { display: none; }
+
+/* ── HEADER ── */
+.app-header {
+  background: rgba(10,0,20,0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 18px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.header-logo img { height: 32px; filter: drop-shadow(0 0 6px var(--pink-glow)); }
+.header-user { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--pink-bg); border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; overflow: hidden;
+}
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-name { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.header-title { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: 0.3px; }
+.header-date { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+/* ── NAV ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  background: rgba(10,0,20,0.95);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  display: flex; z-index: 200;
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 10px 4px 14px; cursor: pointer; border: none; background: none;
+  font-family: 'Lexend', sans-serif; transition: all 0.2s;
+}
+.nav-item .icon { font-size: 21px; }
+.nav-item .label { font-size: 10px; font-weight: 500; margin-top: 3px; color: var(--text-muted); }
+.nav-item.active .label { color: var(--pink); }
+.nav-dot { display: none; width: 4px; height: 4px; border-radius: 50%; background: var(--pink); margin: 2px auto 0; }
+.nav-item.active .nav-dot { display: block; }
+
+/* ── SCREENS ── */
+.screen { display: none; padding: 16px 14px 100px; }
+.screen.active { display: block; }
+
+/* ── GLASS CARDS ── */
+.card {
+  background: var(--dark-card);
+  border: 1px solid var(--border-w);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  backdrop-filter: blur(8px);
+}
+.card-title {
+  font-size: 11px; font-weight: 700; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
+}
+.card-title .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); display: inline-block; }
+.card-title .dot.teal { background: var(--teal); }
+
+/* ── HERO CARD (inicio) ── */
+.hero-card {
+  background: linear-gradient(135deg, rgba(233,30,140,0.18) 0%, rgba(78,203,202,0.10) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0;
+  margin-bottom: 12px;
+  overflow: hidden;
+  position: relative;
+  min-height: 140px;
+}
+.hero-card-img {
+  position: absolute; right: 0; bottom: 0; top: 0;
+  width: 48%; object-fit: cover; object-position: top;
+  opacity: 0.85;
+}
+.hero-card-content { padding: 18px 18px 18px; width: 60%; position: relative; z-index: 1; }
+.hero-card-tag {
+  display: inline-block; background: var(--pink); color: white;
+  font-size: 9px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+}
+.hero-card-name { font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 4px; }
+.hero-card-sub { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+/* ── RING SVG ── */
+.ring-wrap { display: flex; align-items: center; gap: 16px; padding: 4px 0; }
+.ring-info h3 { font-size: 16px; font-weight: 700; color: var(--text); }
+.ring-info p { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+
+/* ── INSIGHT ── */
+.insight-card {
+  background: linear-gradient(135deg, rgba(233,30,140,0.20) 0%, rgba(10,0,20,0.60) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.insight-card .tag {
+  display: inline-block; background: var(--pink-bg); color: var(--pink-light);
+  border: 1px solid rgba(233,30,140,0.3); font-size: 10px; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.insight-card p { font-size: 13px; line-height: 1.6; color: var(--text-soft); }
+.insight-card strong { color: var(--pink-light); }
+
+/* ── ALERT ── */
+.alert-banner {
+  background: rgba(233,30,140,0.10);
+  border: 1px solid rgba(233,30,140,0.35);
+  border-radius: 12px; padding: 12px 14px;
+  display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px;
+}
+.alert-banner .a-icon { font-size: 18px; flex-shrink: 0; }
+.alert-banner .a-text { font-size: 12px; color: var(--text-soft); line-height: 1.5; }
+.alert-banner strong { color: var(--pink-light); }
+
+/* ── QUICK GRID ── */
+.quick-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+.quick-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-w);
+  border-radius: 12px; padding: 10px 6px; text-align: center;
+  cursor: pointer; transition: all 0.15s; font-family: 'Lexend', sans-serif;
+}
+.quick-btn.active {
+  background: var(--pink-bg);
+  border-color: rgba(233,30,140,0.5);
+}
+.quick-btn .q-icon { font-size: 20px; display: block; margin-bottom: 3px; }
+.quick-btn .q-label { font-size: 10px; color: var(--text-muted); font-weight: 500; line-height: 1.2; }
+.quick-btn.active .q-label { color: var(--pink-light); }
+
+/* ── INTENSITY ── */
+.intensity-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.intensity-label { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+.intensity-dots { display: flex; gap: 5px; }
+.i-dot {
+  width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+  border: 1px solid var(--border-w); font-size: 11px;
+  display: flex; align-items: center; justify-content: center; font-weight: 600;
+  transition: all 0.15s; font-family: 'Lexend', sans-serif;
+  background: rgba(255,255,255,0.05); color: var(--text-muted);
+}
+.i-dot.sel-1 { background: var(--teal-bg); border-color: var(--teal); color: var(--teal); transform: scale(1.15); }
+.i-dot.sel-2 { background: rgba(255,160,40,0.15); border-color: #ffa028; color: #ffa028; transform: scale(1.15); }
+.i-dot.sel-3 { background: var(--pink-bg); border-color: var(--pink); color: var(--pink-light); transform: scale(1.15); }
+
+/* ── SAVE STATUS ── */
+.save-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); padding: 8px 0; }
+.save-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.15); flex-shrink: 0; }
+.save-dot.saving { background: var(--teal); animation: pulse 1s infinite; }
+.save-dot.saved { background: #10b981; }
+.save-dot.error { background: var(--pink); }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  width: 100%; background: var(--pink); color: white; border: none;
+  border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 700;
+  font-family: 'Lexend', sans-serif; cursor: pointer; margin-top: 8px;
+  box-shadow: 0 4px 20px var(--pink-glow); transition: opacity 0.2s;
+}
+.btn-primary:active { opacity: 0.85; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary {
+  width: 100%; background: rgba(255,255,255,0.07); color: var(--text-soft);
+  border: 1px solid var(--border-w); border-radius: 14px; padding: 13px;
+  font-size: 14px; font-weight: 600; font-family: 'Lexend', sans-serif; cursor: pointer; margin-top: 8px;
+}
+
+/* ── PILL TOGGLE ── */
+.pill-toggle { display: flex; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 3px; margin-bottom: 14px; border: 1px solid var(--border-w); }
+.pill-toggle button { flex: 1; border: none; background: none; font-family: 'Lexend', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-muted); padding: 8px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+.pill-toggle button.active { background: var(--pink); color: white; font-weight: 600; }
+
+/* ── STATS ── */
+.stat-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.stat-chip { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border-w); border-radius: 12px; padding: 12px 8px; text-align: center; }
+.stat-chip .val { font-size: 24px; font-weight: 700; color: var(--text); }
+.stat-chip .lbl { font-size: 10px; color: var(--text-muted); margin-top: 2px; line-height: 1.3; }
+
+/* ── WEEK CHART ── */
+.week-days { display: flex; gap: 5px; align-items: flex-end; height: 90px; padding: 0 2px; }
+.wday-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+.wday-bar { width: 100%; border-radius: 5px 5px 0 0; background: rgba(78,203,202,0.5); min-height: 4px; transition: height 0.4s; }
+.wday-bar.today { background: var(--pink); box-shadow: 0 0 8px var(--pink-glow); }
+.wday-label { font-size: 9px; color: var(--text-muted); }
+
+/* ── HISTORY ── */
+.history-item { background: var(--dark-card); border: 1px solid var(--border-w); border-radius: 12px; padding: 14px; margin-bottom: 8px; display: flex; gap: 12px; align-items: flex-start; }
+.history-date-box { background: var(--pink-bg); border: 1px solid rgba(233,30,140,0.3); border-radius: 10px; padding: 8px 10px; text-align: center; min-width: 44px; flex-shrink: 0; }
+.history-date-box .day { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1; }
+.history-date-box .month { font-size: 9px; color: var(--pink-light); font-weight: 600; text-transform: uppercase; }
+.history-symptoms { flex: 1; }
+.h-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+.h-notes { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-style: italic; }
+.symptom-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.s-tag { font-size: 10px; padding: 2px 8px; border-radius: 20px; background: rgba(255,255,255,0.08); color: var(--text-muted); border: 1px solid var(--border-w); }
+.s-tag.high { background: var(--pink-bg); color: var(--pink-light); border-color: rgba(233,30,140,0.35); }
+.s-tag.med { background: rgba(255,160,40,0.12); color: #ffb347; border-color: rgba(255,160,40,0.3); }
+
+/* ── FORM ── */
+.form-label { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+textarea, input[type="text"], input[type="number"], select {
+  width: 100%; background: rgba(255,255,255,0.07); border: 1px solid var(--border-w);
+  border-radius: 10px; padding: 10px 12px; font-family: 'Lexend', sans-serif;
+  font-size: 13px; color: white; outline: none; transition: border-color 0.2s;
+}
+textarea::placeholder, input::placeholder { color: rgba(255,255,255,0.25); }
+textarea:focus, input:focus, select:focus { border-color: var(--pink); background: rgba(233,30,140,0.08); }
+select option { background: var(--dark-2); }
+textarea { resize: none; }
+
+/* ── SHARE CARD ── */
+.share-card {
+  background: linear-gradient(135deg, rgba(233,30,140,0.25) 0%, rgba(20,0,35,0.8) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; text-align: center; margin-bottom: 12px;
+}
+.share-card h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.share-card p { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+.btn-white { background: var(--pink); color: white; border: none; border-radius: 10px; padding: 12px 24px; font-size: 13px; font-weight: 700; font-family: 'Lexend', sans-serif; cursor: pointer; box-shadow: 0 4px 14px var(--pink-glow); }
+
+/* ── DISCLAIMER ── */
+.disclaimer { border-left: 3px solid rgba(233,30,140,0.4); border-radius: 0 8px 8px 0; padding: 10px 12px; font-size: 10.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; background: rgba(255,255,255,0.04); }
+
+/* ── SETTING ROW ── */
+.setting-row { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; }
+.setting-row:last-child { border-bottom: none; }
+.setting-icon { font-size: 20px; margin-right: 12px; }
+.setting-text { flex: 1; }
+.s-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.s-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.setting-arrow { color: rgba(255,255,255,0.2); font-size: 16px; }
+
+/* ── PROFILE ── */
+.profile-avatar-large { width: 80px; height: 80px; border-radius: 50%; background: var(--pink-bg); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 10px; overflow: hidden; cursor: pointer; position: relative; }
+.profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+.profile-avatar-large .edit-overlay { position: absolute; bottom: 0; width: 100%; text-align: center; background: rgba(233,30,140,0.65); font-size: 10px; color: white; padding: 4px 0; }
+.profile-name { text-align: center; font-size: 18px; font-weight: 700; color: var(--text); }
+.profile-sub { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* ── MODAL ── */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; align-items: flex-end; backdrop-filter: blur(4px); }
+.modal-overlay.open { display: flex; }
+.modal-sheet { background: #180025; border: 1px solid var(--border); border-radius: 20px 20px 0 0; padding: 20px 20px 40px; width: 100%; max-width: 430px; margin: 0 auto; max-height: 85vh; overflow-y: auto; }
+.modal-handle { width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 16px; }
+.modal-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(233,30,140,0.95); backdrop-filter: blur(8px); color: white; padding: 12px 20px; border-radius: 24px; font-size: 13px; font-weight: 500; opacity: 0; transition: all 0.3s; z-index: 999; white-space: nowrap; max-width: 90%; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── EDU CARD ── */
+.edu-card { background: rgba(255,255,255,0.04); border: 1px solid var(--border-w); border-radius: 12px; padding: 12px; display: flex; gap: 12px; margin-bottom: 8px; cursor: pointer; transition: background 0.2s; }
+.edu-card:hover { background: var(--dark-card-h); }
+.edu-thumb { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+.edu-info .e-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; line-height: 1.3; }
+.edu-info .e-sub { font-size: 11px; color: var(--text-muted); }
+
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 14px; }
+.empty-state .empty-icon { font-size: 40px; margin-bottom: 10px; }
+.brand-footer { text-align: center; padding: 8px; font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0.5px; }
+.brand-footer span { color: var(--pink-light); font-weight: 600; }
+#photoInput { display: none; }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loadingScreen">
+  <img class="logo-load" src="logo-ctech.png" alt="C-Tech" onerror="this.style.display='none'">
+  <div class="spinner"></div>
+  <div class="load-text">MENOTRACK · CARGANDO</div>
+</div>
+
+<!-- AUTH -->
+<div id="authScreen">
+  <div class="auth-bg"></div>
+  <div class="auth-content">
+    <div class="auth-logo-wrap">
+      <img src="logo-ctech.png" alt="C-Tech" onerror="this.style.display='none'">
+    </div>
+    <div class="auth-headline">MenoTrack <em>C-Tech</em></div>
+    <div class="auth-sub">Tu diario inteligente de climaterio</div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchTab('login',this)">Iniciar sesión</button>
+        <button class="auth-tab" onclick="switchTab('register',this)">Crear cuenta</button>
+      </div>
+      <div id="loginForm">
+        <div class="auth-field"><label>Correo electrónico</label><input type="email" id="loginEmail" placeholder="tu@correo.com"></div>
+        <div class="auth-field"><label>Contraseña</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+        <button class="btn-auth" onclick="doLogin()">Entrar</button>
+      </div>
+      <div id="registerForm" style="display:none;">
+        <div class="auth-field"><label>Nombre completo</label><input type="text" id="regName" placeholder="María González"></div>
+        <div class="auth-field"><label>Correo electrónico</label><input type="email" id="regEmail" placeholder="tu@correo.com"></div>
+        <div class="auth-field"><label>Contraseña (mín. 6 caracteres)</label><input type="password" id="regPass" placeholder="••••••••"></div>
+        <div class="auth-field">
+          <label>Etapa actual</label>
+          <select id="regStage">
+            <option value="">Selecciona...</option>
+            <option>Perimenopausia (ciclo irregular)</option>
+            <option>Menopausia (último año sin periodo)</option>
+            <option>Posmenopausia (más de 1 año sin periodo)</option>
+            <option>No estoy segura</option>
+          </select>
+        </div>
+        <button class="btn-auth" onclick="doRegister()">Crear cuenta</button>
+      </div>
+      <div class="auth-error" id="authError"></div>
+    </div>
+    <div class="auth-disclaimer">Este contenido es de carácter informativo y no sustituye la consulta médica. Consulta a tu médico ante cualquier síntoma.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="header-top">
+      <div class="header-logo">
+        <img src="logo-ctech.png" alt="C-Tech" onerror="this.style.display='none'">
+      </div>
+      <div class="header-user" onclick="goTo('perfil', document.querySelector('[data-nav=perfil]'))">
+        <div class="user-avatar" id="headerAvatar">👩</div>
+        <span class="user-name" id="headerName">Mi cuenta</span>
+      </div>
+    </div>
+    <div class="header-title">MenoTrack C-Tech</div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+
+  <!-- INICIO -->
+  <div class="screen active" id="screen-inicio">
+    <div style="margin-top:14px;"></div>
+
+    <!-- Hero card con imagen -->
+    <div class="hero-card">
+      <div class="hero-card-content">
+        <div class="hero-card-tag">Hoy</div>
+        <div class="hero-card-name" id="greetName">¡Hola!</div>
+        <div class="hero-card-sub" id="todaySummaryText">Registra cómo te sientes hoy</div>
+      </div>
+      <img class="hero-card-img" src="mujer_ctech2.png" alt="" onerror="this.style.display='none'">
+    </div>
+
+    <!-- Ring + conteo -->
+    <div class="card">
+      <div class="ring-wrap">
+        <svg width="72" height="72" viewBox="0 0 72 72" style="flex-shrink:0;">
+          <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
+          <circle cx="36" cy="36" r="28" fill="none" stroke="#E91E8C" stroke-width="8"
+            stroke-dasharray="175.9" stroke-dashoffset="175.9" id="ringCircle"
+            transform="rotate(-90 36 36)" stroke-linecap="round"
+            style="filter:drop-shadow(0 0 4px rgba(233,30,140,0.6))"/>
+          <text x="36" y="33" text-anchor="middle" font-family="Lexend,sans-serif" font-size="16" font-weight="700" fill="white" id="ringNum">0</text>
+          <text x="36" y="46" text-anchor="middle" font-family="Lexend,sans-serif" font-size="9" fill="rgba(255,255,255,0.45)">síntomas</text>
+        </svg>
+        <div class="ring-info">
+          <h3>Registro del día</h3>
+          <p id="todayDetailText">Selecciona los síntomas que sientes hoy y guarda tu registro.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="alertBanner" style="display:none;" class="alert-banner">
+      <div class="a-icon">💡</div>
+      <div class="a-text" id="alertText"></div>
+    </div>
+
+    <div class="insight-card" id="weekInsightCard">
+      <div class="tag">✨ Esta semana</div>
+      <p id="weekInsightText">Registra síntomas durante varios días para ver tu resumen semanal personalizado.</p>
+    </div>
+
+    <!-- Quick registro -->
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Registro rápido</div>
+      <div class="quick-grid" id="quickGrid">
+        <button class="quick-btn" data-sym="bochorno" onclick="toggleQuick(this)"><span class="q-icon">🔥</span><span class="q-label">Bochorno</span></button>
+        <button class="quick-btn" data-sym="sudoracion" onclick="toggleQuick(this)"><span class="q-icon">💧</span><span class="q-label">Sudoración nocturna</span></button>
+        <button class="quick-btn" data-sym="sueno" onclick="toggleQuick(this)"><span class="q-icon">😴</span><span class="q-label">Mal sueño</span></button>
+        <button class="quick-btn" data-sym="cansancio" onclick="toggleQuick(this)"><span class="q-icon">🪫</span><span class="q-label">Cansancio</span></button>
+        <button class="quick-btn" data-sym="niebla" onclick="toggleQuick(this)"><span class="q-icon">🌫️</span><span class="q-label">Niebla mental</span></button>
+        <button class="quick-btn" data-sym="animo" onclick="toggleQuick(this)"><span class="q-icon">🎭</span><span class="q-label">Cambios de ánimo</span></button>
+        <button class="quick-btn" data-sym="ansiedad" onclick="toggleQuick(this)"><span class="q-icon">😰</span><span class="q-label">Ansiedad</span></button>
+        <button class="quick-btn" data-sym="articular" onclick="toggleQuick(this)"><span class="q-icon">🦴</span><span class="q-label">Dolor articular</span></button>
+        <button class="quick-btn" data-sym="energia" onclick="toggleQuick(this)"><span class="q-icon">⚡</span><span class="q-label">Poca energía</span></button>
+      </div>
+      <div class="save-status"><div class="save-dot" id="saveDot"></div><span id="saveStatusText"></span></div>
+      <button class="btn-primary" onclick="saveQuickLog()" id="btnSaveQuick">💾 Guardar registro del día</button>
+    </div>
+
+    <!-- Edu -->
+    <div class="card">
+      <div class="card-title"><span class="dot teal"></span>Para ti hoy</div>
+      <div class="edu-card">
+        <img class="edu-thumb" src="art3-menopausia.png" alt="" onerror="this.style.background='rgba(233,30,140,0.15)'">
+        <div class="edu-info">
+          <div class="e-title">¿Por qué los bochornos empeoran de noche?</div>
+          <div class="e-sub">Artículo · 3 min · C-Tech</div>
+        </div>
+      </div>
+      <div class="edu-card">
+        <img class="edu-thumb" src="art6-calcioyvitamina.png" alt="" onerror="this.style.background='rgba(78,203,202,0.15)'">
+        <div class="edu-info">
+          <div class="e-title">Calcio y vitamina D: cuánto necesitas después de los 45</div>
+          <div class="e-sub">Infográfico · C-Tech Carnot</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">Este contenido es de carácter informativo y no sustituye la consulta médica. Ante cualquier síntoma, consulta a tu médico.</div>
+    <div class="brand-footer">Apoyado por <span>C-Tech · Carnot</span></div>
+  </div>
+
+  <!-- REGISTRAR -->
+  <div class="screen" id="screen-registrar">
+    <div style="margin-top:14px;"></div>
+    <div class="pill-toggle">
+      <button class="active" onclick="setRegView('sintomas',this)">Síntomas</button>
+      <button onclick="setRegView('medicion',this)">Mediciones</button>
+      <button onclick="setRegView('medicacion',this)">Medicación</button>
+    </div>
+
+    <div id="reg-sintomas">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Síntomas vasomotores</div>
+        <div id="groupVasom"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#a78bfa"></span>Estado emocional</div>
+        <div id="groupEmocional"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot teal"></span>Físico & otros</div>
+        <div id="groupFisico"></div>
+      </div>
+      <div class="card">
+        <label class="form-label">Notas del día (opcional)</label>
+        <textarea rows="3" id="notasDia" placeholder="Ej: Dormí mal, tuve un día estresante..."></textarea>
+      </div>
+      <button class="btn-primary" onclick="saveFullLog()">💾 Guardar registro completo</button>
+    </div>
+
+    <div id="reg-medicion" style="display:none;">
+      <div class="card">
+        <div class="card-title"><span class="dot teal"></span>Mediciones del día</div>
+        <div style="margin-bottom:14px;"><label class="form-label">Peso (kg)</label><input type="number" id="mPeso" placeholder="Ej: 62.5" step="0.1"></div>
+        <div style="margin-bottom:14px;"><label class="form-label">Horas de sueño</label><input type="number" id="mSueno" placeholder="Ej: 6" step="0.5" min="0" max="12"></div>
+        <div style="margin-bottom:14px;">
+          <label class="form-label">Calidad del sueño</label>
+          <div class="intensity-row" style="margin-top:8px;">
+            <div class="intensity-dots">
+              <button class="i-dot" data-val="1" data-group="suenoCal" onclick="selectDot(this)">😴</button>
+              <button class="i-dot" data-val="2" data-group="suenoCal" onclick="selectDot(this)">😐</button>
+              <button class="i-dot" data-val="3" data-group="suenoCal" onclick="selectDot(this)">😩</button>
+            </div>
+            <span class="intensity-label">Bueno · Regular · Malo</span>
+          </div>
+        </div>
+        <div><label class="form-label">Nivel de energía (1-10)</label><input type="number" id="mEnergia" placeholder="Ej: 6" min="1" max="10"></div>
+      </div>
+      <div class="card">
+        <label class="form-label">Ciclo menstrual</label>
+        <select id="mCiclo">
+          <option value="">Selecciona...</option>
+          <option>Menstruación presente</option>
+          <option>Sangrado irregular / manchado</option>
+          <option>Sin sangrado este mes</option>
+          <option>Más de 3 meses sin sangrado</option>
+          <option>Menopausia confirmada</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="saveMediciones()">💾 Guardar mediciones</button>
+    </div>
+
+    <div id="reg-medicacion" style="display:none;">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#10b981"></span>Hoy tomé...</div>
+        <div id="medCheckList">
+          <div class="setting-row">
+            <div class="setting-icon">💊</div>
+            <div class="setting-text"><div class="s-title">C-Tech Carnot</div><div class="s-sub">Calcio + Vitamina D3</div></div>
+            <input type="checkbox" id="medCtech" style="width:18px;height:18px;accent-color:var(--pink)">
+          </div>
+          <div class="setting-row">
+            <div class="setting-icon">🌿</div>
+            <div class="setting-text"><div class="s-title">Magnesio</div><div class="s-sub">Suplemento</div></div>
+            <input type="checkbox" id="medMagnesio" style="width:18px;height:18px;accent-color:var(--pink)">
+          </div>
+          <div class="setting-row" style="border-bottom:none;">
+            <div class="setting-icon">💉</div>
+            <div class="setting-text"><div class="s-title">TRH (prescrita)</div><div class="s-sub">Terapia hormonal</div></div>
+            <input type="checkbox" id="medTRH" style="width:18px;height:18px;accent-color:var(--pink)">
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;margin-top:8px;">
+          <label class="form-label">Agregar medicamento / suplemento</label>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <input type="text" id="newMed" placeholder="Nombre del medicamento..." style="flex:1;">
+            <button class="btn-primary" style="width:auto;padding:10px 16px;margin-top:0;" onclick="addMedItem()">+</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="saveMedicacion()">💾 Guardar medicación</button>
+    </div>
+
+    <div class="disclaimer" style="margin-top:16px;">Este contenido es de carácter informativo y no sustituye la consulta médica.</div>
+  </div>
+
+  <!-- PROGRESO -->
+  <div class="screen" id="screen-progreso">
+    <div style="margin-top:14px;"></div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Esta semana</div>
+      <div class="stat-row">
+        <div class="stat-chip"><div class="val" id="statDias">0</div><div class="lbl">días registrados</div></div>
+        <div class="stat-chip"><div class="val" id="statTotal">0</div><div class="lbl">síntomas totales</div></div>
+        <div class="stat-chip"><div class="val" id="statMax" style="color:var(--pink-light)">—</div><div class="lbl">días con síntomas</div></div>
+      </div>
+      <div class="card-title" style="margin-top:4px;"><span class="dot"></span>Intensidad diaria</div>
+      <div class="week-days" id="weekChart"></div>
+      <div style="display:flex;gap:5px;padding:4px 2px 0;margin-top:6px;">
+        <div style="flex:1;text-align:center;font-size:9px;color:rgba(255,255,255,0.3);">L</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:rgba(255,255,255,0.3);">M</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:rgba(255,255,255,0.3);">X</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:rgba(255,255,255,0.3);">J</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:rgba(255,255,255,0.3);">V</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:rgba(255,255,255,0.3);">S</div>
+        <div style="flex:1;text-align:center;font-size:9px;color:rgba(255,255,255,0.3);">D</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:#a78bfa"></span>Síntomas más frecuentes</div>
+      <div id="topSymptoms"><div class="empty-state"><div class="empty-icon">📊</div>Registra síntomas para ver tus estadísticas</div></div>
+    </div>
+    <div class="disclaimer">Este contenido es de carácter informativo y no sustituye la consulta médica.</div>
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="screen" id="screen-historial">
+    <div style="margin-top:14px;"></div>
+    <div class="share-card">
+      <h3>📋 Reporte para tu médico</h3>
+      <p>Genera un resumen de tus registros recientes para compartir en tu próxima consulta.</p>
+      <button class="btn-white" onclick="showModal('modalReporte')">Generar reporte</button>
+    </div>
+    <div id="historialList"><div class="empty-state"><div class="empty-icon">📅</div>Aún no hay registros guardados</div></div>
+    <div class="disclaimer" style="margin-top:8px;">Este contenido es de carácter informativo y no sustituye la consulta médica.</div>
+  </div>
+
+  <!-- PERFIL -->
+  <div class="screen" id="screen-perfil">
+    <div style="margin-top:24px;"></div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div class="profile-avatar-large" onclick="document.getElementById('photoInput').click()">
+        <span id="profileEmoji">👩</span>
+        <img id="profilePhotoImg" src="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;">
+        <div class="edit-overlay">cambiar</div>
+      </div>
+      <input type="file" id="photoInput" accept="image/*" onchange="uploadPhoto(this)">
+      <div class="profile-name" id="profileName">Mi perfil</div>
+      <div class="profile-sub" id="profileSub">Cargando...</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Mi información</div>
+      <div class="setting-row" onclick="showModal('modalPerfil')">
+        <div class="setting-icon">👩‍⚕️</div>
+        <div class="setting-text"><div class="s-title">Editar nombre y etapa</div><div class="s-sub" id="etapaLabel">Etapa de climaterio</div></div>
+        <div class="setting-arrow">›</div>
+      </div>
+      <div class="setting-row" style="border-bottom:none;" onclick="showModal('modalMedico')">
+        <div class="setting-icon">🏥</div>
+        <div class="setting-text"><div class="s-title">Datos de mi médico</div><div class="s-sub" id="medicoLabel">Sin registrar</div></div>
+        <div class="setting-arrow">›</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot teal"></span>Cuenta</div>
+      <div class="setting-row" style="border-bottom:none;" onclick="doLogout()">
+        <div class="setting-icon">🚪</div>
+        <div class="setting-text"><div class="s-title" style="color:var(--pink-light);">Cerrar sesión</div></div>
+      </div>
+    </div>
+    <div class="disclaimer">Este contenido es de carácter informativo y no sustituye la consulta médica.</div>
+    <div class="brand-footer">MenoTrack · Apoyado por <span>C-Tech · Carnot</span></div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-nav="inicio" onclick="goTo('inicio',this)"><span class="icon">🏠</span><span class="label">Inicio</span><span class="nav-dot"></span></button>
+    <button class="nav-item" data-nav="registrar" onclick="goTo('registrar',this)"><span class="icon">✏️</span><span class="label">Registrar</span><span class="nav-dot"></span></button>
+    <button class="nav-item" data-nav="progreso" onclick="goTo('progreso',this)"><span class="icon">📊</span><span class="label">Progreso</span><span class="nav-dot"></span></button>
+    <button class="nav-item" data-nav="historial" onclick="goTo('historial',this)"><span class="icon">📋</span><span class="label">Historial</span><span class="nav-dot"></span></button>
+    <button class="nav-item" data-nav="perfil" onclick="goTo('perfil',this)"><span class="icon">👤</span><span class="label">Perfil</span><span class="nav-dot"></span></button>
+  </nav>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL REPORTE -->
+<div class="modal-overlay" id="modalReporte" onclick="closeModal('modalReporte')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📋 Reporte para consulta médica</div>
+    <div id="reporteContent"></div>
+    <button class="btn-primary" onclick="copyReporte()">Copiar reporte</button>
+    <button class="btn-secondary" onclick="closeModal('modalReporte')">Cerrar</button>
+    <div class="disclaimer" style="margin-top:12px;">Este reporte es informativo. El diagnóstico corresponde exclusivamente a tu médico.</div>
+  </div>
+</div>
+
+<!-- MODAL PERFIL -->
+<div class="modal-overlay" id="modalPerfil" onclick="closeModal('modalPerfil')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Editar perfil</div>
+    <div class="auth-field"><label>Nombre completo</label><input type="text" id="editName" placeholder="Tu nombre"></div>
+    <div class="auth-field">
+      <label>Etapa actual</label>
+      <select id="editStage">
+        <option value="">Selecciona...</option>
+        <option>Perimenopausia (ciclo irregular)</option>
+        <option>Menopausia (último año sin periodo)</option>
+        <option>Posmenopausia (más de 1 año sin periodo)</option>
+        <option>No estoy segura</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="savePerfil()">Guardar cambios</button>
+  </div>
+</div>
+
+<!-- MODAL MÉDICO -->
+<div class="modal-overlay" id="modalMedico" onclick="closeModal('modalMedico')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Datos de mi médico</div>
+    <div class="auth-field"><label>Nombre del médico</label><input type="text" id="editMedName" placeholder="Dr. / Dra. ..."></div>
+    <div class="auth-field"><label>Especialidad</label><input type="text" id="editMedSpec" placeholder="Ginecología, Endocrinología..."></div>
+    <div class="auth-field"><label>Próxima cita (opcional)</label><input type="text" id="editMedCita" placeholder="Ej: 10 de julio 2026"></div>
+    <button class="btn-primary" onclick="saveMedico()">Guardar</button>
+  </div>
+</div>
+
+<script>
+// ──────────────────────────────────────────────
+//  FIREBASE CONFIG — REEMPLAZA CON TUS VALORES
+// ──────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyCnsHfSzJmlQOCl29wVSJR8L0vBIhPcqKw",
+  authDomain: "flowtrak-64669.firebaseapp.com",
+  projectId: "flowtrak-64669",
+  storageBucket: "flowtrak-64669.firebasestorage.app",
+  messagingSenderId: "293072769054",
+  appId: "1:293072769054:web:b8a00277d42d8240e31e0f"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth    = firebase.auth();
+const db      = firebase.firestore();
+const storage = firebase.storage();
+
+let currentUser = null;
+let userProfile = {};
+
+const SYMPTOM_MAP = {
+  bochorno:      { icon:'🔥', label:'Bochorno' },
+  sudoracion:    { icon:'💧', label:'Sudoración nocturna' },
+  hombro:        { icon:'🦾', label:'Hombro frío' },
+  animo:         { icon:'🎭', label:'Cambios de ánimo' },
+  irritabilidad: { icon:'😤', label:'Irritabilidad' },
+  ansiedad:      { icon:'😰', label:'Ansiedad' },
+  niebla:        { icon:'🌫️', label:'Niebla mental' },
+  cansancio:     { icon:'🪫', label:'Cansancio' },
+  articular:     { icon:'🦴', label:'Dolor articular' },
+  resequedad:    { icon:'🌵', label:'Resequedad vaginal' },
+  libido:        { icon:'💕', label:'Cambios en libido' },
+  sueno:         { icon:'😴', label:'Mal sueño' },
+  menstruacion:  { icon:'🩸', label:'Menstruación irregular' },
+  energia:       { icon:'⚡', label:'Poca energía' },
+};
+
+const SYMPTOMS_DEF = {
+  vasom: [
+    { id:'bochorno', icon:'🔥', label:'Bochornos' },
+    { id:'sudoracion', icon:'💧', label:'Sudoración nocturna' },
+    { id:'hombro', icon:'🦾', label:'Dolor de hombro / "hombro frío"' },
+  ],
+  emocional: [
+    { id:'animo', icon:'🎭', label:'Cambios de ánimo' },
+    { id:'irritabilidad', icon:'😤', label:'Irritabilidad' },
+    { id:'ansiedad', icon:'😰', label:'Ansiedad' },
+    { id:'niebla', icon:'🌫️', label:'Niebla mental' },
+  ],
+  fisico: [
+    { id:'cansancio', icon:'🪫', label:'Cansancio' },
+    { id:'articular', icon:'🦴', label:'Dolor articular' },
+    { id:'resequedad', icon:'🌵', label:'Resequedad vaginal' },
+    { id:'libido', icon:'💕', label:'Cambios en libido' },
+    { id:'sueno', icon:'😴', label:'Mal sueño' },
+    { id:'menstruacion', icon:'🩸', label:'Menstruación irregular' },
+  ]
+};
+
+firebase.auth().onAuthStateChanged(async user => {
+  document.getElementById('loadingScreen').style.display = 'none';
+  if (user) {
+    currentUser = user;
+    await loadUserProfile();
+    showApp();
+  } else {
+    document.getElementById('authScreen').style.display = 'flex';
+  }
+});
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('authError').textContent = '';
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  try { await auth.signInWithEmailAndPassword(email, pass); }
+  catch(e) { document.getElementById('authError').textContent = authMsg(e.code); }
+}
+
+async function doRegister() {
+  const name  = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass  = document.getElementById('regPass').value;
+  const stage = document.getElementById('regStage').value;
+  if (!name) { document.getElementById('authError').textContent = 'Ingresa tu nombre'; return; }
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await db.collection('patients').doc(cred.user.uid).set({ name, email, stage, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+  } catch(e) { document.getElementById('authError').textContent = authMsg(e.code); }
+}
+
+async function doLogout() { await auth.signOut(); location.reload(); }
+
+function authMsg(code) {
+  return { 'auth/user-not-found':'No existe una cuenta con ese correo.', 'auth/wrong-password':'Contraseña incorrecta.', 'auth/email-already-in-use':'Ya existe una cuenta con ese correo.', 'auth/weak-password':'La contraseña debe tener al menos 6 caracteres.', 'auth/invalid-email':'El correo no es válido.' }[code] || 'Error: ' + code;
+}
+
+async function loadUserProfile() {
+  const doc = await db.collection('patients').doc(currentUser.uid).get();
+  if (doc.exists) userProfile = doc.data();
+}
+
+function showApp() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display  = 'block';
+  setHeaderDate();
+  updateHeaderUser();
+  buildSymptomGroups();
+  loadTodayData();
+  buildProgressScreen();
+  buildHistorial();
+}
+
+function setHeaderDate() {
+  document.getElementById('headerDate').textContent =
+    new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long' });
+}
+
+function updateHeaderUser() {
+  const name  = userProfile.name || currentUser.email || 'Mi cuenta';
+  const first = name.split(' ')[0];
+  document.getElementById('headerName').textContent  = first;
+  document.getElementById('greetName').textContent   = `¡Hola, ${first}!`;
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileSub').textContent  = userProfile.stage || 'Sin etapa registrada';
+  document.getElementById('etapaLabel').textContent  = userProfile.stage || 'Sin etapa registrada';
+  if (userProfile.medicoNombre) {
+    document.getElementById('medicoLabel').textContent = userProfile.medicoNombre + (userProfile.medicoEsp ? ` · ${userProfile.medicoEsp}` : '');
+  }
+  if (userProfile.photoURL) showProfilePhoto(userProfile.photoURL);
+}
+
+function todayKey() { return new Date().toISOString().slice(0,10); }
+
+async function loadTodayData() {
+  const doc = await db.collection('patients').doc(currentUser.uid).collection('logs').doc(todayKey()).get();
+  if (!doc.exists) return;
+  const data = doc.data();
+  const syms = data.symptoms || [];
+  updateRing(syms.length);
+  updateTodaySummary(syms);
+  syms.forEach(s => { const b = document.querySelector(`[data-sym="${s.id}"]`); if (b) b.classList.add('active'); });
+}
+
+function updateRing(count) {
+  const offset = 175.9 * (1 - Math.min(count / 9, 1));
+  document.getElementById('ringCircle').style.strokeDashoffset = offset;
+  document.getElementById('ringNum').textContent = count;
+}
+
+function updateTodaySummary(logs) {
+  const el = document.getElementById('todayDetailText');
+  if (!logs.length) { el.textContent = 'Selecciona los síntomas que sientes hoy.'; return; }
+  const names = logs.slice(0,3).map(s => SYMPTOM_MAP[s.id]?.label || s.id).join(', ');
+  el.textContent = `${logs.length} síntoma${logs.length>1?'s':''} registrado${logs.length>1?'s':''}: ${names}${logs.length>3?' y más':''}.`;
+}
+
+async function saveQuickLog() {
+  const btn = document.getElementById('btnSaveQuick');
+  btn.disabled = true;
+  setSaveStatus('saving','Guardando...');
+  const symptoms = [...document.querySelectorAll('#quickGrid .quick-btn.active')].map(b => ({ id: b.dataset.sym, intensity: 1, ts: Date.now() }));
+  try {
+    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(todayKey()).set({ date: todayKey(), symptoms, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    updateRing(symptoms.length);
+    updateTodaySummary(symptoms);
+    setSaveStatus('saved', `✅ ${symptoms.length} síntoma${symptoms.length!==1?'s':''} guardado${symptoms.length!==1?'s':''}`);
+    showToast('✅ Registro guardado');
+    buildProgressScreen(); buildHistorial();
+  } catch(e) { setSaveStatus('error','Error al guardar'); showToast('❌ ' + e.message); }
+  btn.disabled = false;
+}
+
+function setSaveStatus(state, text) {
+  document.getElementById('saveDot').className = 'save-dot ' + state;
+  document.getElementById('saveStatusText').textContent = text;
+}
+
+function buildSymptomGroups() {
+  buildGroup('groupVasom', SYMPTOMS_DEF.vasom);
+  buildGroup('groupEmocional', SYMPTOMS_DEF.emocional);
+  buildGroup('groupFisico', SYMPTOMS_DEF.fisico);
+}
+
+function buildGroup(id, syms) {
+  document.getElementById(id).innerHTML = syms.map(s => `
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer;" onclick="toggleSym('${s.id}')">
+        <span style="font-size:18px;">${s.icon}</span>
+        <span style="font-size:13px;font-weight:500;color:var(--text-soft);flex:1;">${s.label}</span>
+        <div id="check_${s.id}" style="width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;transition:all 0.2s;flex-shrink:0;"></div>
+      </div>
+      <div id="intensity_${s.id}" style="display:none;padding-left:26px;">
+        <div class="intensity-row">
+          <span class="intensity-label">Intensidad:</span>
+          <div class="intensity-dots">
+            <button class="i-dot" data-val="1" data-group="${s.id}" onclick="selectDot(this)">L</button>
+            <button class="i-dot" data-val="2" data-group="${s.id}" onclick="selectDot(this)">M</button>
+            <button class="i-dot" data-val="3" data-group="${s.id}" onclick="selectDot(this)">A</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleSym(id) {
+  const check = document.getElementById('check_' + id);
+  const intens = document.getElementById('intensity_' + id);
+  const on = check.dataset.on === '1';
+  check.dataset.on     = on ? '0' : '1';
+  check.style.background   = on ? '' : 'var(--pink)';
+  check.style.borderColor  = on ? 'rgba(255,255,255,0.15)' : 'var(--pink)';
+  check.innerHTML = on ? '' : '<span style="color:white;font-size:14px;">✓</span>';
+  intens.style.display = on ? 'none' : 'block';
+}
+
+function selectDot(btn) {
+  document.querySelectorAll(`[data-group="${btn.dataset.group}"]`).forEach(d => d.className = 'i-dot');
+  btn.classList.add('sel-' + btn.dataset.val);
+}
+
+async function saveFullLog() {
+  const allIds = [...SYMPTOMS_DEF.vasom, ...SYMPTOMS_DEF.emocional, ...SYMPTOMS_DEF.fisico].map(s => s.id);
+  const symptoms = allIds.filter(id => document.getElementById('check_'+id)?.dataset.on === '1').map(id => {
+    const dot = document.querySelector(`#intensity_${id} .i-dot[class*="sel-"]`);
+    return { id, intensity: dot ? parseInt(dot.dataset.val) : 1, ts: Date.now() };
+  });
+  const notes = document.getElementById('notasDia').value.trim();
+  try {
+    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(todayKey()).set({ date: todayKey(), symptoms, notes, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    showToast(`✅ ${symptoms.length} síntomas guardados`);
+    goTo('inicio', document.querySelector('[data-nav=inicio]'));
+    loadTodayData(); buildProgressScreen(); buildHistorial();
+  } catch(e) { showToast('❌ ' + e.message); }
+}
+
+async function saveMediciones() {
+  try {
+    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(todayKey()).set({
+      peso: document.getElementById('mPeso').value || null,
+      horasSueno: document.getElementById('mSueno').value || null,
+      energia: document.getElementById('mEnergia').value || null,
+      ciclo: document.getElementById('mCiclo').value || null,
+      suenoCal: document.querySelector('[data-group="suenoCal"][class*="sel-"]')?.dataset.val || null,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    showToast('✅ Mediciones guardadas');
+  } catch(e) { showToast('❌ ' + e.message); }
+}
+
+async function saveMedicacion() {
+  const meds = [];
+  if (document.getElementById('medCtech').checked)    meds.push('C-Tech Carnot');
+  if (document.getElementById('medMagnesio').checked) meds.push('Magnesio');
+  if (document.getElementById('medTRH').checked)      meds.push('TRH');
+  try {
+    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(todayKey()).set({ medicacion: meds, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    showToast('✅ Medicación guardada');
+  } catch(e) { showToast('❌ ' + e.message); }
+}
+
+function addMedItem() {
+  const val = document.getElementById('newMed').value.trim();
+  if (!val) return;
+  const div = document.createElement('div');
+  div.className = 'setting-row';
+  div.innerHTML = `<div class="setting-icon">💊</div><div class="setting-text"><div class="s-title">${val}</div></div><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--pink)">`;
+  document.getElementById('medCheckList').appendChild(div);
+  document.getElementById('newMed').value = '';
+  showToast('Medicamento agregado ✓');
+}
+
+async function buildProgressScreen() {
+  const snap = await db.collection('patients').doc(currentUser.uid).collection('logs').orderBy('date','desc').limit(7).get();
+  const logs = snap.docs.map(d => d.data());
+  document.getElementById('statDias').textContent  = logs.length;
+  document.getElementById('statTotal').textContent = logs.reduce((a,l) => a + (l.symptoms||[]).length, 0);
+
+  const freq = {};
+  logs.forEach(l => (l.symptoms||[]).forEach(s => { freq[s.id] = (freq[s.id]||0)+1; }));
+  const top = Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('statMax').textContent = top[0] ? top[0][1] : '—';
+
+  const weekData = [0,0,0,0,0,0,0];
+  const today = new Date();
+  const dayOfWeek = (today.getDay() + 6) % 7;
+  logs.forEach(l => {
+    if (!l.date) return;
+    const diff = Math.round((today - new Date(l.date + 'T12:00:00')) / 86400000);
+    const idx = dayOfWeek - diff;
+    if (idx >= 0 && idx < 7) weekData[idx] = (l.symptoms||[]).length;
+  });
+  const maxBar = Math.max(...weekData, 1);
+  document.getElementById('weekChart').innerHTML = weekData.map((v,i) => {
+    const h = Math.max(Math.round((v/maxBar)*80), 4);
+    return `<div class="wday-col"><div class="wday-bar${i===dayOfWeek?' today':''}" style="height:${h}px;"></div></div>`;
+  }).join('');
+
+  const el = document.getElementById('topSymptoms');
+  if (!top.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div>Registra síntomas para ver tus estadísticas</div>'; return; }
+  el.innerHTML = top.slice(0,6).map(([id,count]) => {
+    const sym = SYMPTOM_MAP[id] || { icon:'🔸', label: id };
+    return `<div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <span style="font-size:13px;color:var(--text-soft);">${sym.icon} ${sym.label}</span>
+        <span style="font-size:11px;color:var(--text-muted);">${count}/${logs.length} días</span>
+      </div>
+      <div style="height:7px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:${Math.round((count/logs.length)*100)}%;background:var(--pink);border-radius:4px;box-shadow:0 0 6px var(--pink-glow);"></div>
+      </div></div>`;
+  }).join('');
+
+  if (top.length) {
+    const first = SYMPTOM_MAP[top[0][0]]?.label || top[0][0];
+    document.getElementById('weekInsightText').innerHTML = `Tu síntoma más frecuente fue <strong>${first}</strong>, presente ${top[0][1]} de ${logs.length} días registrados.${top.length>1?' También: ' + top.slice(1,3).map(([id])=>SYMPTOM_MAP[id]?.label||id).join(' y ')+'.' : ''}`;
+    document.getElementById('weekInsightCard').querySelector('.tag').textContent = `✨ Semana en curso · ${logs.length} días`;
+    if (top[0][1] >= 4) {
+      document.getElementById('alertBanner').style.display = 'flex';
+      document.getElementById('alertText').innerHTML = `<strong>Patrón frecuente:</strong> "${first}" se repitió ${top[0][1]} veces esta semana. Coméntalo con tu médico.`;
+    }
+  }
+}
+
+async function buildHistorial() {
+  const snap = await db.collection('patients').doc(currentUser.uid).collection('logs').orderBy('date','desc').limit(20).get();
+  if (snap.empty) { document.getElementById('historialList').innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div>Aún no hay registros guardados</div>'; return; }
+  const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  document.getElementById('historialList').innerHTML = snap.docs.map(d => {
+    const log = d.data();
+    const dt  = new Date(log.date + 'T12:00:00');
+    const syms = log.symptoms || [];
+    return `<div class="history-item">
+      <div class="history-date-box"><div class="day">${dt.getDate()}</div><div class="month">${months[dt.getMonth()]}</div></div>
+      <div class="history-symptoms">
+        <div class="h-title">${syms.length} síntoma${syms.length!==1?'s':''} registrado${syms.length!==1?'s':''}</div>
+        <div class="symptom-tags">
+          ${syms.slice(0,5).map(s => { const sym=SYMPTOM_MAP[s.id]||{icon:'🔸',label:s.id}; const cls=s.intensity===3?'high':s.intensity===2?'med':''; return `<span class="s-tag ${cls}">${sym.icon} ${sym.label}</span>`; }).join('')}
+          ${syms.length>5?`<span class="s-tag">+${syms.length-5}</span>`:''}
+        </div>
+        ${log.notes ? `<div class="h-notes">📝 ${log.notes}</div>` : ''}
+      </div></div>`;
+  }).join('');
+}
+
+async function showModal(id) {
+  if (id === 'modalReporte') await buildReporte();
+  document.getElementById(id).classList.add('open');
+}
+
+async function buildReporte() {
+  const snap = await db.collection('patients').doc(currentUser.uid).collection('logs').orderBy('date','desc').limit(28).get();
+  const logs = snap.docs.map(d=>d.data());
+  const freq = {};
+  logs.forEach(l => (l.symptoms||[]).forEach(s => { freq[s.id]=(freq[s.id]||0)+1; }));
+  const top  = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const name  = userProfile.name || 'Paciente';
+  const stage = userProfile.stage || 'No especificada';
+  const medico = userProfile.medicoNombre ? `${userProfile.medicoNombre} · ${userProfile.medicoEsp||''}` : 'No registrado';
+  const today  = new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+  window._reporteText = `MENOTRACK C-TECH — REPORTE DE SÍNTOMAS\n${'─'.repeat(40)}\nPaciente: ${name}\nEtapa: ${stage}\nMédico: ${medico}\nFecha: ${today}\nPeriodo: últimos ${logs.length} registros\n${'─'.repeat(40)}\nSÍNTOMAS MÁS FRECUENTES:\n${top.map(([id,c])=>`• ${SYMPTOM_MAP[id]?.icon||''} ${SYMPTOM_MAP[id]?.label||id}: ${c} días`).join('\n')}\n${'─'.repeat(40)}\nEste reporte es informativo. Generado por MenoTrack C-Tech · Carnot`;
+  document.getElementById('reporteContent').innerHTML = `
+    <div class="insight-card" style="margin-bottom:14px;">
+      <div class="tag">${today}</div>
+      <p><strong>Paciente:</strong> ${name}<br><strong>Etapa:</strong> ${stage}<br><strong>Médico:</strong> ${medico}<br><br>
+      <strong>Síntomas más frecuentes (${logs.length} días):</strong><br>
+      ${top.map(([id,c])=>`${SYMPTOM_MAP[id]?.icon||''} ${SYMPTOM_MAP[id]?.label||id}: ${c} días`).join('<br>')||'Sin datos suficientes'}</p>
+    </div>`;
+}
+
+function copyReporte() {
+  navigator.clipboard.writeText(window._reporteText||'').then(()=>showToast('📋 Reporte copiado')).catch(()=>showToast('Copia el texto manualmente'));
+  closeModal('modalReporte');
+}
+
+async function savePerfil() {
+  const name  = document.getElementById('editName').value.trim();
+  const stage = document.getElementById('editStage').value;
+  if (!name) { showToast('Ingresa tu nombre'); return; }
+  await db.collection('patients').doc(currentUser.uid).update({ name, stage });
+  userProfile.name = name; userProfile.stage = stage;
+  updateHeaderUser(); closeModal('modalPerfil'); showToast('✅ Perfil actualizado');
+}
+
+async function saveMedico() {
+  const n=document.getElementById('editMedName').value.trim(), s=document.getElementById('editMedSpec').value.trim(), c=document.getElementById('editMedCita').value.trim();
+  await db.collection('patients').doc(currentUser.uid).update({ medicoNombre:n, medicoEsp:s, medicoCita:c });
+  userProfile.medicoNombre=n; userProfile.medicoEsp=s;
+  updateHeaderUser(); closeModal('modalMedico'); showToast('✅ Datos del médico guardados');
+}
+
+async function uploadPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  showToast('Subiendo foto...');
+  try {
+    const ref = storage.ref(`patients/${currentUser.uid}/photo.jpg`);
+    await ref.put(file);
+    const url = await ref.getDownloadURL();
+    await db.collection('patients').doc(currentUser.uid).update({ photoURL: url });
+    userProfile.photoURL = url;
+    showProfilePhoto(url);
+    showToast('✅ Foto actualizada');
+  } catch(e) { showToast('❌ Error al subir foto'); }
+}
+
+function showProfilePhoto(url) {
+  const img = document.getElementById('profilePhotoImg');
+  img.src = url; img.style.display = 'block';
+  document.getElementById('profileEmoji').style.display = 'none';
+  document.getElementById('headerAvatar').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+}
+
+function goTo(screen, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+  if (screen === 'progreso')  buildProgressScreen();
+  if (screen === 'historial') buildHistorial();
+  if (screen === 'perfil') {
+    document.getElementById('editName').value    = userProfile.name  || '';
+    document.getElementById('editStage').value   = userProfile.stage || '';
+    document.getElementById('editMedName').value = userProfile.medicoNombre || '';
+    document.getElementById('editMedSpec').value = userProfile.medicoEsp    || '';
+  }
+}
+
+function toggleQuick(btn) { btn.classList.toggle('active'); }
+function setRegView(view, btn) {
+  ['sintomas','medicion','medicacion'].forEach(v => document.getElementById('reg-'+v).style.display = v===view?'block':'none');
+  document.querySelectorAll('.pill-toggle button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
