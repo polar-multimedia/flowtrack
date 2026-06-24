@@ -475,6 +475,93 @@ textarea { resize: none; }
 .brand-footer { text-align: center; padding: 8px; font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0.5px; }
 .brand-footer span { color: var(--pink-light); font-weight: 600; }
 #photoInput { display: none; }
+
+/* ══ DISEÑO v2 — mobile card UI ═══════════════════════════════════════ */
+
+/* Header greeting */
+.app-header { padding: 18px 20px 14px !important; }
+.header-top { display: none !important; }
+.header-title { display: none !important; }
+.header-date-old { display: none; }
+.header-greeting { display: flex; align-items: center; justify-content: space-between; }
+.greeting-hello { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1.1; }
+.greeting-hello .g-name { color: var(--teal); }
+.greeting-date-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.header-avatar-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--pink-bg); border: 2px solid rgba(233,30,140,0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; overflow: hidden; cursor: pointer; flex-shrink: 0;
+}
+.header-avatar-btn img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+/* Week strip */
+.week-strip { display: flex; gap: 4px; justify-content: space-between; padding: 2px 0; }
+.wday-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.wday-name { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; }
+.wday-circle {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; color: var(--text-muted);
+  background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.07);
+  transition: all 0.2s;
+}
+.wday-circle.today { background: #fff; color: #0d0010; font-weight: 800; border-color: transparent; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.wday-circle.has-log:not(.today) { background: var(--pink-bg); border-color: rgba(233,30,140,0.35); color: var(--pink-light); }
+.wday-circle.today.has-log { background: var(--pink); color: #fff; box-shadow: 0 4px 14px var(--pink-glow); border-color: transparent; }
+.wday-dot { width: 4px; height: 4px; border-radius: 50%; background: transparent; }
+.wday-dot.vis { background: var(--teal); }
+
+/* Daily challenge card */
+.daily-card {
+  background: linear-gradient(140deg, #1A3A5C 0%, #0d2040 55%, rgba(78,203,202,0.6) 100%);
+  border-radius: 22px; padding: 22px 100px 22px 22px;
+  margin-bottom: 14px; position: relative; overflow: hidden;
+  min-height: 148px; cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.daily-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 82% 50%, rgba(233,30,140,0.22) 0%, transparent 60%);
+  pointer-events: none;
+}
+.daily-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.6);
+  text-transform: uppercase; letter-spacing: 0.9px; margin-bottom: 10px;
+}
+.daily-label::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--teal); box-shadow:0 0 6px var(--teal); }
+.daily-title { font-size: 23px; font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 6px; }
+.daily-sub { font-size: 12px; color: rgba(255,255,255,0.62); line-height: 1.4; }
+.daily-ring { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 80px; height: 80px; }
+
+/* Para ti hoy grid */
+.para-ti-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.para-ti-card {
+  border-radius: 20px; padding: 16px 14px 14px;
+  min-height: 148px; position: relative; overflow: hidden;
+  cursor: pointer; display: flex; flex-direction: column;
+  justify-content: space-between; text-decoration: none; color: inherit;
+  transition: transform 0.15s;
+}
+.para-ti-card:active { transform: scale(0.97); }
+.pt-featured { grid-column: 1 / -1; min-height: 110px; background: linear-gradient(145deg, #E91E8C 0%, #a01060 100%); box-shadow: 0 8px 24px rgba(233,30,140,0.35); }
+.pt-col0 { background: linear-gradient(145deg, #1A3A5C 0%, #0d2040 100%); border: 1px solid rgba(78,203,202,0.22); }
+.pt-col1 { background: linear-gradient(145deg, #2a8a89 0%, #4ECBCA 100%); }
+.para-ti-card.skeleton { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); animation: skPulse 1.6s ease-in-out infinite; }
+@keyframes skPulse { 0%,100%{opacity:0.35} 50%{opacity:0.65} }
+.ptcard-tag { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.6); display: block; margin-bottom: 7px; }
+.ptcard-title { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.35; }
+.ptcard-foot { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 10px; }
+.ptcard-icon { position: absolute; bottom: 10px; right: 12px; font-size: 24px; opacity: 0.45; }
+
+/* Nav pill tweaks */
+.bottom-nav { padding: 8px 14px 20px !important; background: rgba(6,0,12,0.98) !important; border-top: 1px solid rgba(255,255,255,0.05) !important; }
+.nav-item { border-radius: 50px !important; padding: 8px 4px 6px !important; }
+.nav-item.active { background: rgba(233,30,140,0.13) !important; }
+.nav-item.active .label { color: var(--pink) !important; font-weight: 700 !important; }
+.nav-item .icon { font-size: 19px !important; }
+/* ══ END DISEÑO v2 ══════════════════════════════════════════════════════ */
 </style>
 </head>
 <body>
@@ -582,63 +669,68 @@ textarea { resize: none; }
 
   <!-- HEADER -->
   <div class="app-header">
-    <div class="header-top">
-      <div class="header-logo">
-        <img src="logo-ctech.png" alt="C-Tech" onerror="this.style.display='none'">
+    <div class="header-greeting">
+      <div>
+        <div class="greeting-hello">Hola, <span class="g-name" id="headerName">...</span> 👋</div>
+        <div class="greeting-date-sub" id="headerDate"></div>
       </div>
-      <div class="header-user" onclick="goTo('perfil', document.querySelector('[data-nav=perfil]'))">
-        <div class="user-avatar" id="headerAvatar">👩</div>
-        <span class="user-name" id="headerName">Mi cuenta</span>
-      </div>
+      <div class="header-avatar-btn" id="headerAvatar" onclick="goTo('perfil', document.querySelector('[data-nav=perfil]'))">👩</div>
     </div>
-    <div class="header-title">MenoTrack C-Tech</div>
-    <div class="header-date" id="headerDate"></div>
   </div>
 
   <!-- INICIO -->
   <div class="screen active" id="screen-inicio">
-    <div style="margin-top:14px;"></div>
+    <div style="height:6px;"></div>
 
-    <!-- Hero card con imagen -->
-    <div class="hero-card">
-      <div class="hero-card-content">
-        <div class="hero-card-tag">Hoy</div>
-        <div class="hero-card-name" id="greetName">¡Hola!</div>
-        <div class="hero-card-sub" id="todaySummaryText">Registra cómo te sientes hoy</div>
-      </div>
-      <img class="hero-card-img" src="mujer_ctech2.png" alt="" onerror="this.style.display='none'">
-    </div>
-
-    <!-- Ring + conteo -->
-    <div class="card">
-      <div class="ring-wrap">
-        <svg width="72" height="72" viewBox="0 0 72 72" style="flex-shrink:0;">
-          <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
-          <circle cx="36" cy="36" r="28" fill="none" stroke="#E91E8C" stroke-width="8"
+    <!-- Daily card -->
+    <div class="daily-card" onclick="goTo('registrar', document.querySelector('[data-nav=registrar]'))">
+      <div class="daily-label" id="todaySummaryText">Registro de hoy</div>
+      <div class="daily-title">¿Cómo te<br>sientes hoy?</div>
+      <p class="daily-sub" id="todayDetailText">Toca para registrar tus síntomas</p>
+      <div class="daily-ring">
+        <svg width="80" height="80" viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,0.13)" stroke-width="7"/>
+          <circle cx="36" cy="36" r="28" fill="none" stroke="white" stroke-width="7"
             stroke-dasharray="175.9" stroke-dashoffset="175.9" id="ringCircle"
             transform="rotate(-90 36 36)" stroke-linecap="round"
-            style="filter:drop-shadow(0 0 4px rgba(233,30,140,0.6))"/>
+            style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.5))"/>
           <text x="36" y="33" text-anchor="middle" font-family="Lexend,sans-serif" font-size="16" font-weight="700" fill="white" id="ringNum">0</text>
-          <text x="36" y="46" text-anchor="middle" font-family="Lexend,sans-serif" font-size="9" fill="rgba(255,255,255,0.45)">síntomas</text>
+          <text x="36" y="46" text-anchor="middle" font-family="Lexend,sans-serif" font-size="9" fill="rgba(255,255,255,0.5)">síntomas</text>
         </svg>
-        <div class="ring-info">
-          <h3>Registro del día</h3>
-          <p id="todayDetailText">Selecciona los síntomas que sientes hoy y guarda tu registro.</p>
-        </div>
       </div>
     </div>
 
+    <!-- Week strip -->
+    <div class="card" style="padding:14px 16px 12px;">
+      <div class="card-title" style="margin-bottom:12px;"><span class="dot teal"></span>Tu semana</div>
+      <div class="week-strip" id="weekStrip">
+        <div style="height:36px;width:100%;background:rgba(255,255,255,0.03);border-radius:8px;"></div>
+      </div>
+    </div>
+
+    <!-- Alert -->
     <div id="alertBanner" style="display:none;" class="alert-banner">
       <div class="a-icon">💡</div>
       <div class="a-text" id="alertText"></div>
     </div>
 
+    <!-- Para ti hoy -->
+    <div class="card-title" style="padding:4px 2px 10px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.8px;display:flex;align-items:center;gap:6px;">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;flex-shrink:0;"></span>Para ti hoy
+    </div>
+    <div class="para-ti-grid" id="paraHoyCards">
+      <div class="para-ti-card skeleton pt-featured"></div>
+      <div class="para-ti-card skeleton pt-col0"></div>
+      <div class="para-ti-card skeleton pt-col1"></div>
+    </div>
+
+    <!-- Week insight -->
     <div class="insight-card" id="weekInsightCard">
       <div class="tag">✨ Esta semana</div>
       <p id="weekInsightText">Registra síntomas durante varios días para ver tu resumen semanal personalizado.</p>
     </div>
 
-    <!-- Quick registro -->
+    <!-- Registro rápido -->
     <div class="card">
       <div class="card-title"><span class="dot"></span>Registro rápido</div>
       <div class="quick-grid" id="quickGrid">
@@ -654,27 +746,6 @@ textarea { resize: none; }
       </div>
       <div class="save-status"><div class="save-dot" id="saveDot"></div><span id="saveStatusText"></span></div>
       <button class="btn-primary" onclick="saveQuickLog()" id="btnSaveQuick">💾 Guardar registro del día</button>
-    </div>
-
-    <!-- Edu -->
-    <div class="card">
-      <div class="card-title"><span class="dot teal"></span>Para ti hoy</div>
-      <div id="paraHoyCards">
-        <div class="edu-card" style="opacity:0.35;pointer-events:none;">
-          <div class="edu-thumb" style="background:rgba(233,30,140,0.12);border-radius:8px;"></div>
-          <div class="edu-info">
-            <div style="height:12px;background:rgba(255,255,255,0.1);border-radius:4px;margin-bottom:8px;width:80%;"></div>
-            <div style="height:10px;background:rgba(255,255,255,0.07);border-radius:4px;width:50%;"></div>
-          </div>
-        </div>
-        <div class="edu-card" style="opacity:0.2;pointer-events:none;">
-          <div class="edu-thumb" style="background:rgba(78,203,202,0.08);border-radius:8px;"></div>
-          <div class="edu-info">
-            <div style="height:12px;background:rgba(255,255,255,0.07);border-radius:4px;margin-bottom:8px;width:70%;"></div>
-            <div style="height:10px;background:rgba(255,255,255,0.05);border-radius:4px;width:40%;"></div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="disclaimer">Este contenido es de carácter informativo y no sustituye la consulta médica. Ante cualquier síntoma, consulta a tu médico.</div>
@@ -1134,6 +1205,7 @@ function showApp() {
   buildSymptomGroups();
   loadTodayData();
   loadPersonalizedContent();
+  buildWeekStrip();
   buildProgressScreen();
   buildHistorial();
 }
@@ -1144,10 +1216,9 @@ function setHeaderDate() {
 }
 
 function updateHeaderUser() {
-  const name  = userProfile.name || currentUser.email || 'Mi cuenta';
+  const name  = userProfile.name || currentUser.email || 'amiga';
   const first = name.split(' ')[0];
   document.getElementById('headerName').textContent  = first;
-  document.getElementById('greetName').textContent   = `¡Hola, ${first}!`;
   document.getElementById('profileName').textContent = name;
   document.getElementById('profileSub').textContent  = userProfile.stage || 'Sin etapa registrada';
   document.getElementById('etapaLabel').textContent  = userProfile.stage || 'Sin etapa registrada';
@@ -1194,7 +1265,7 @@ async function saveQuickLog() {
     updateTodaySummary(symptoms);
     setSaveStatus('saved', `✅ ${symptoms.length} síntoma${symptoms.length!==1?'s':''} guardado${symptoms.length!==1?'s':''}`);
     showToast('✅ Registro guardado');
-    buildProgressScreen(); buildHistorial();
+    buildWeekStrip(); buildProgressScreen(); buildHistorial();
   } catch(e) { setSaveStatus('error','Error al guardar'); showToast('❌ ' + e.message); }
   btn.disabled = false;
 }
@@ -1593,23 +1664,26 @@ async function loadPersonalizedContent() {
     // 6. Fallback si Firestore vacío o sin matches
     if (!articles.length) articles = FALLBACK_CONTENT;
 
-    // 7. Render cards con link al Hub
-    container.innerHTML = articles.slice(0,3).map(a => `
-      <a class="edu-card" href="${a.url}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
-        <img class="edu-thumb" src="${a.imagen||''}" alt="" onerror="this.style.background='rgba(233,30,140,0.15)'">
-        <div class="edu-info">
-          <div class="e-title">${a.titulo}</div>
-          <div class="e-sub">Artículo · FemeNews · C-Tech</div>
+    // 7. Render para-ti cards
+    const icons = ['📖','🌺','💊'];
+    container.innerHTML = articles.slice(0,3).map((a,i) => `
+      <a class="para-ti-card ${i===0?'pt-featured':'pt-col'+(i-1)}" href="${a.url}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
+        <div>
+          <span class="ptcard-tag">${a.pilar||'FemeNews'} · C-Tech</span>
+          <div class="ptcard-title">${a.titulo}</div>
         </div>
+        <div class="ptcard-foot">Leer en FemeNews →</div>
+        <div class="ptcard-icon">${icons[i]}</div>
       </a>`).join('');
   } catch(e) {
-    container.innerHTML = FALLBACK_CONTENT.slice(0,2).map(a => `
-      <a class="edu-card" href="${a.url}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
-        <img class="edu-thumb" src="${a.imagen}" alt="" onerror="this.style.background='rgba(233,30,140,0.15)'">
-        <div class="edu-info">
-          <div class="e-title">${a.titulo}</div>
-          <div class="e-sub">Artículo · FemeNews · C-Tech</div>
+    container.innerHTML = FALLBACK_CONTENT.slice(0,3).map((a,i) => `
+      <a class="para-ti-card ${i===0?'pt-featured':'pt-col'+(i-1)}" href="${a.url}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
+        <div>
+          <span class="ptcard-tag">FemeNews · C-Tech</span>
+          <div class="ptcard-title">${a.titulo}</div>
         </div>
+        <div class="ptcard-foot">Leer en FemeNews →</div>
+        <div class="ptcard-icon">${['📖','🌺','💊'][i]}</div>
       </a>`).join('');
   }
 }
@@ -1620,7 +1694,7 @@ function goTo(screen, btn) {
   document.getElementById('screen-' + screen).classList.add('active');
   btn.classList.add('active');
   window.scrollTo(0,0);
-  if (screen === 'inicio')    loadPersonalizedContent();
+  if (screen === 'inicio')    { loadPersonalizedContent(); buildWeekStrip(); }
   if (screen === 'progreso')  buildProgressScreen();
   if (screen === 'graficas')  buildCharts();
   if (screen === 'historial') buildHistorial();
@@ -1641,6 +1715,39 @@ function goTo(screen, btn) {
     document.getElementById('editMedName').value = userProfile.medicoNombre || '';
     document.getElementById('editMedSpec').value = userProfile.medicoEsp    || '';
   }
+}
+
+async function buildWeekStrip() {
+  const strip = document.getElementById('weekStrip');
+  if (!strip) return;
+  const today = new Date();
+  const todayStr = todayKey();
+  const DAY_NAMES = ['D','L','M','X','J','V','S'];
+
+  const dates = Array.from({length:7}, (_,i) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() - (6 - i));
+    return d;
+  });
+
+  const logDates = new Set();
+  try {
+    const snap = await db.collection('patients').doc(currentUser.uid)
+      .collection('logs').orderBy('date','desc').limit(7).get();
+    snap.docs.forEach(d => logDates.add(d.id));
+  } catch(e) {}
+
+  strip.innerHTML = dates.map(d => {
+    const dStr = d.toISOString().slice(0,10);
+    const isToday = dStr === todayStr;
+    const hasLog  = logDates.has(dStr);
+    return `
+      <div class="wday-item">
+        <div class="wday-name">${DAY_NAMES[d.getDay()]}</div>
+        <div class="wday-circle${isToday?' today':''}${hasLog?' has-log':''}">${d.getDate()}</div>
+        <div class="wday-dot${hasLog?' vis':''}"></div>
+      </div>`;
+  }).join('');
 }
 
 function toggleQuick(btn) { btn.classList.toggle('active'); }
