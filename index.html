@@ -571,18 +571,20 @@ textarea { resize: none; }
     <!-- Edu -->
     <div class="card">
       <div class="card-title"><span class="dot teal"></span>Para ti hoy</div>
-      <div class="edu-card">
-        <img class="edu-thumb" src="art3-menopausia.png" alt="" onerror="this.style.background='rgba(233,30,140,0.15)'">
-        <div class="edu-info">
-          <div class="e-title">¿Por qué los bochornos empeoran de noche?</div>
-          <div class="e-sub">Artículo · 3 min · C-Tech</div>
+      <div id="paraHoyCards">
+        <div class="edu-card" style="opacity:0.35;pointer-events:none;">
+          <div class="edu-thumb" style="background:rgba(233,30,140,0.12);border-radius:8px;"></div>
+          <div class="edu-info">
+            <div style="height:12px;background:rgba(255,255,255,0.1);border-radius:4px;margin-bottom:8px;width:80%;"></div>
+            <div style="height:10px;background:rgba(255,255,255,0.07);border-radius:4px;width:50%;"></div>
+          </div>
         </div>
-      </div>
-      <div class="edu-card">
-        <img class="edu-thumb" src="art6-calcioyvitamina.png" alt="" onerror="this.style.background='rgba(78,203,202,0.15)'">
-        <div class="edu-info">
-          <div class="e-title">Calcio y vitamina D: cuánto necesitas después de los 45</div>
-          <div class="e-sub">Infográfico · C-Tech Carnot</div>
+        <div class="edu-card" style="opacity:0.2;pointer-events:none;">
+          <div class="edu-thumb" style="background:rgba(78,203,202,0.08);border-radius:8px;"></div>
+          <div class="edu-info">
+            <div style="height:12px;background:rgba(255,255,255,0.07);border-radius:4px;margin-bottom:8px;width:70%;"></div>
+            <div style="height:10px;background:rgba(255,255,255,0.05);border-radius:4px;width:40%;"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -845,6 +847,29 @@ const storage = firebase.storage();
 let currentUser = null;
 let userProfile = {};
 
+const SYMPTOM_TO_TAGS = {
+  bochorno:      ['bochornos', 'sudoracion_nocturna'],
+  sudoracion:    ['sudoracion_nocturna', 'bochornos'],
+  niebla:        ['niebla_mental', 'cansancio'],
+  cansancio:     ['cansancio', 'energia', 'sueno'],
+  sueno:         ['sueno', 'cansancio', 'niebla_mental'],
+  articular:     ['dolor_articular'],
+  animo:         ['animo'],
+  energia:       ['energia', 'cansancio'],
+  ansiedad:      ['animo'],
+  irritabilidad: ['animo'],
+  hombro:        ['dolor_articular'],
+  resequedad:    ['salud_femenina'],
+  libido:        ['salud_femenina'],
+  menstruacion:  ['salud_femenina'],
+};
+
+const FALLBACK_CONTENT = [
+  { titulo: 'Bochornos en el climaterio: causas y estrategias que sí funcionan', url: 'https://polar-multimedia.github.io/c-tech/articulo-bochornos.html', imagen: 'https://polar-multimedia.github.io/c-tech/art7-bochornos.png' },
+  { titulo: 'Insomnio, fatiga y niebla mental: cómo el climaterio afecta tu energía', url: 'https://polar-multimedia.github.io/c-tech/articulo-sueno-fatiga.html', imagen: 'https://polar-multimedia.github.io/c-tech/art8-sueno.png' },
+  { titulo: 'Lo que cambia en tus huesos durante la menopausia', url: 'https://polar-multimedia.github.io/c-tech/articulo-menopausia.html', imagen: 'https://polar-multimedia.github.io/c-tech/art3-menopausia.png' },
+];
+
 const SYMPTOM_MAP = {
   bochorno:      { icon:'🔥', label:'Bochorno' },
   sudoracion:    { icon:'💧', label:'Sudoración nocturna' },
@@ -940,6 +965,7 @@ function showApp() {
   updateHeaderUser();
   buildSymptomGroups();
   loadTodayData();
+  loadPersonalizedContent();
   buildProgressScreen();
   buildHistorial();
 }
@@ -1243,12 +1269,71 @@ function showProfilePhoto(url) {
   document.getElementById('headerAvatar').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
 }
 
+async function loadPersonalizedContent() {
+  const container = document.getElementById('paraHoyCards');
+  if (!container) return;
+  try {
+    // 1. Últimos 14 días de logs
+    const snap = await db.collection('patients').doc(currentUser.uid)
+      .collection('logs').orderBy('date','desc').limit(14).get();
+
+    // 2. Frecuencia ponderada por intensidad
+    const freq = {};
+    snap.docs.forEach(d => {
+      (d.data().symptoms || []).forEach(s => {
+        freq[s.id] = (freq[s.id] || 0) + (s.intensity || 1);
+      });
+    });
+
+    // 3. Top 3 síntomas
+    const top3 = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0,3).map(([id]) => id);
+
+    // 4. Tags de contenido a buscar
+    const tagSet = new Set();
+    top3.forEach(id => (SYMPTOM_TO_TAGS[id] || []).forEach(t => tagSet.add(t)));
+    const tags = [...tagSet];
+
+    // 5. Buscar en Firestore /content
+    let articles = [];
+    if (tags.length) {
+      const cSnap = await db.collection('content')
+        .where('activo', '==', true)
+        .where('symptoms_tags', 'array-contains-any', tags.slice(0,10))
+        .orderBy('fecha','desc').limit(5).get();
+      articles = cSnap.docs.map(d => d.data());
+    }
+
+    // 6. Fallback si Firestore vacío o sin matches
+    if (!articles.length) articles = FALLBACK_CONTENT;
+
+    // 7. Render cards con link al Hub
+    container.innerHTML = articles.slice(0,3).map(a => `
+      <a class="edu-card" href="${a.url}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
+        <img class="edu-thumb" src="${a.imagen||''}" alt="" onerror="this.style.background='rgba(233,30,140,0.15)'">
+        <div class="edu-info">
+          <div class="e-title">${a.titulo}</div>
+          <div class="e-sub">Artículo · FemeNews · C-Tech</div>
+        </div>
+      </a>`).join('');
+  } catch(e) {
+    container.innerHTML = FALLBACK_CONTENT.slice(0,2).map(a => `
+      <a class="edu-card" href="${a.url}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
+        <img class="edu-thumb" src="${a.imagen}" alt="" onerror="this.style.background='rgba(233,30,140,0.15)'">
+        <div class="edu-info">
+          <div class="e-title">${a.titulo}</div>
+          <div class="e-sub">Artículo · FemeNews · C-Tech</div>
+        </div>
+      </a>`).join('');
+  }
+}
+
 function goTo(screen, btn) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('screen-' + screen).classList.add('active');
   btn.classList.add('active');
   window.scrollTo(0,0);
+  if (screen === 'inicio')    loadPersonalizedContent();
   if (screen === 'progreso')  buildProgressScreen();
   if (screen === 'historial') buildHistorial();
   if (screen === 'registrar') {
