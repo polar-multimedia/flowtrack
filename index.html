@@ -514,6 +514,23 @@ textarea { resize: none; }
 .card-title .dot { background: var(--pink) !important; }
 .card-title .dot.teal { background: var(--teal) !important; }
 
+/* Bell + notif panel light */
+.bell-btn{background:rgba(78,203,202,.07) !important;border-color:rgba(78,203,202,.22) !important}
+.notif-panel{background:#F7F8FA !important;border-bottom-color:rgba(78,203,202,.18) !important}
+.notif-item{background:rgba(78,203,202,.06) !important;border-color:rgba(78,203,202,.14) !important}
+.notif-item.warn{background:rgba(233,30,140,.05) !important;border-color:rgba(233,30,140,.15) !important}
+.notif-title{color:#1a1a2e !important}
+.notif-sub{color:#6B7489 !important}
+.rep-label{color:#1a9998 !important;border-bottom-color:rgba(26,153,152,.2) !important}
+.rep-key{color:#6B7489 !important}
+.rep-val{color:#1a1a2e !important}
+.rep-bar-label{color:#6B7489 !important}
+.rep-bar-track{background:rgba(0,0,0,.07) !important}
+.rep-week-cell{background:rgba(0,0,0,.03) !important;border-color:rgba(0,0,0,.07) !important}
+.rep-week-sub{color:#9AA3B2 !important}
+.rep-day-date{color:#9AA3B2 !important}
+.rep-day-syms{color:#4a4a5a !important}
+.rep-day-row{border-bottom-color:rgba(0,0,0,.05) !important}
 /* Quick symptom buttons — aqua light */
 .quick-btn { background: rgba(78,203,202,.06) !important; border-color: rgba(78,203,202,.2) !important; }
 .quick-btn.active { background: rgba(78,203,202,.14) !important; border-color: rgba(78,203,202,.42) !important; }
@@ -909,6 +926,54 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
 }
 /* ══ END DARK MODE ══════════════════════════════════════════════════════ */
 
+/* ── CAMPANA DE NOTIFICACIONES ── */
+.bell-btn{position:relative;width:38px;height:38px;border-radius:50%;background:rgba(78,203,202,.08);border:1px solid rgba(78,203,202,.22);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.bell-btn:active{transform:scale(.9)}
+.bell-btn svg{stroke:rgba(78,203,202,.7);transition:stroke .2s}
+.bell-btn.has-notif svg{stroke:#4ECBCA;filter:drop-shadow(0 0 5px rgba(78,203,202,.6))}
+.bell-badge{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:#E91E8C;border:1.5px solid var(--dark);display:none}
+.bell-btn.has-notif .bell-badge{display:block;animation:bellPulse 2s infinite}
+@keyframes bellPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+.notif-panel{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-110%);width:100%;max-width:430px;background:var(--dark);border-bottom:1px solid rgba(78,203,202,.22);z-index:300;transition:transform .3s cubic-bezier(.4,0,.2,1);border-radius:0 0 20px 20px;box-shadow:0 8px 32px rgba(0,0,0,.4);padding:14px 18px 18px}
+.notif-panel.open{transform:translateX(-50%) translateY(0)}
+.notif-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.notif-panel-title{font-size:13px;font-weight:700;color:var(--teal);letter-spacing:.3px}
+.notif-close{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:0;line-height:1}
+.notif-item{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;border-radius:12px;margin-bottom:7px;background:rgba(78,203,202,.05);border:1px solid rgba(78,203,202,.12)}
+.notif-item.warn{background:rgba(233,30,140,.05);border-color:rgba(233,30,140,.15)}
+.notif-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:rgba(78,203,202,.1)}
+.notif-item.warn .notif-icon{background:rgba(233,30,140,.1)}
+.notif-body{flex:1}
+.notif-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;line-height:1.3}
+.notif-sub{font-size:11px;color:var(--text-muted);line-height:1.4}
+.notif-empty{text-align:center;padding:18px 0;color:var(--text-muted);font-size:12px}
+/* ── REPORTE MÉDICO ── */
+.rep-section{margin-bottom:16px}
+.rep-label{font-size:9.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid rgba(78,203,202,.18)}
+.rep-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.rep-row:last-child{border-bottom:none}
+.rep-key{color:var(--text-muted)}
+.rep-val{font-weight:600;color:var(--text);text-align:right;max-width:60%}
+.rep-bar-row{display:flex;align-items:center;gap:8px;padding:5px 0}
+.rep-bar-label{font-size:11px;color:var(--text-muted);width:120px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rep-bar-track{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.06)}
+.rep-bar-fill{height:6px;border-radius:3px;background:var(--teal);transition:width .4s}
+.rep-bar-num{font-size:10px;font-weight:700;color:var(--teal);width:28px;text-align:right;flex-shrink:0}
+.rep-week-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.rep-week-cell{background:rgba(255,255,255,.04);border-radius:10px;padding:8px 6px;text-align:center;border:1px solid rgba(255,255,255,.06)}
+.rep-week-num{font-size:15px;font-weight:800;color:var(--teal)}
+.rep-week-sub{font-size:9px;color:var(--text-muted);margin-top:2px;line-height:1.3}
+.rep-day-row{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.rep-day-row:last-child{border-bottom:none}
+.rep-day-date{font-size:10px;color:var(--text-muted);width:72px;flex-shrink:0}
+.rep-day-syms{flex:1;font-size:10px;color:var(--text-soft);line-height:1.4}
+.rep-day-empty{color:rgba(255,255,255,.2);font-style:italic}
+.rep-share-bar{display:flex;gap:8px;margin-top:4px}
+.btn-rep-share{flex:1;padding:13px 10px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;border:1.5px solid}
+.btn-rep-copy{background:rgba(78,203,202,.10);border-color:rgba(78,203,202,.35);color:var(--teal)}
+.btn-rep-copy:active{background:rgba(78,203,202,.2)}
+.btn-rep-share-native{background:rgba(233,30,140,.10);border-color:rgba(233,30,140,.35);color:var(--pink)}
+.btn-rep-share-native:active{background:rgba(233,30,140,.2)}
 /* ── REGISTRO RÁPIDO DESPLEGABLE ── */
 .rq-wrap{margin-top:10px}
 .rq-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;background:rgba(78,203,202,.07);border:1px solid rgba(78,203,202,.22);border-radius:14px;transition:background .2s}
@@ -1037,6 +1102,15 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
 <!-- APP -->
 <div id="appScreen">
 
+  <!-- NOTIF PANEL -->
+  <div class="notif-panel" id="notifPanel">
+    <div class="notif-panel-header">
+      <span class="notif-panel-title">Notificaciones</span>
+      <button class="notif-close" onclick="closeNotifPanel()">✕</button>
+    </div>
+    <div id="notifList"><div class="notif-empty">Cargando...</div></div>
+  </div>
+
   <!-- HEADER -->
   <div class="app-header">
     <div class="header-greeting">
@@ -1044,7 +1118,13 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
         <div class="greeting-hello">Hola, <span class="g-name" id="headerName">...</span> 👋</div>
         <div class="greeting-date-sub" id="headerDate"></div>
       </div>
-      <div class="header-avatar-btn" id="headerAvatar" onclick="goTo('perfil', document.querySelector('[data-nav=perfil]'))">👩</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="bell-btn" id="bellBtn" onclick="toggleNotifPanel()" aria-label="Notificaciones">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="bell-badge" id="bellBadge"></span>
+        </button>
+        <div class="header-avatar-btn" id="headerAvatar" onclick="goTo('perfil', document.querySelector('[data-nav=perfil]'))">👩</div>
+      </div>
     </div>
   </div>
 
@@ -1382,13 +1462,23 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
 
 <!-- MODAL REPORTE -->
 <div class="modal-overlay" id="modalReporte" onclick="closeModal('modalReporte')">
-  <div class="modal-sheet" onclick="event.stopPropagation()">
+  <div class="modal-sheet" onclick="event.stopPropagation()" style="max-height:88vh;overflow-y:auto;">
     <div class="modal-handle"></div>
-    <div class="modal-title">📋 Reporte para consulta médica</div>
+    <div class="modal-title" style="margin-bottom:4px;">Reporte para consulta médica</div>
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:14px;">Últimos 28 días · Generado por MenoTrack</div>
     <div id="reporteContent"></div>
-    <button class="btn-primary" onclick="copyReporte()">Copiar reporte</button>
-    <button class="btn-secondary" onclick="closeModal('modalReporte')">Cerrar</button>
-    <div class="disclaimer" style="margin-top:12px;">Este reporte es informativo. El diagnóstico corresponde exclusivamente a tu médico.</div>
+    <div class="rep-share-bar">
+      <button class="btn-rep-share btn-rep-copy" onclick="copyReporte()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copiar texto
+      </button>
+      <button class="btn-rep-share btn-rep-share-native" onclick="shareReporte()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Compartir
+      </button>
+    </div>
+    <button class="btn-secondary" onclick="closeModal('modalReporte')" style="margin-top:8px;">Cerrar</button>
+    <div class="disclaimer" style="margin-top:10px;">Este reporte es informativo. El diagnóstico corresponde exclusivamente a tu médico.</div>
   </div>
 </div>
 
@@ -1618,6 +1708,7 @@ function showApp() {
   buildWeekStrip();
   buildProgressScreen();
   buildHistorial();
+  refreshNotifications();
 }
 
 function setHeaderDate() {
@@ -1856,29 +1947,208 @@ async function showModal(id) {
   document.getElementById(id).classList.add('open');
 }
 
+/* ── NOTIFICACIONES ── */
+let _notifRead = false;
+
+async function computeNotifications() {
+  if (!currentUser) return [];
+  const notifs = [];
+  // 1. Días sin registrar
+  const snap = await db.collection('patients').doc(currentUser.uid).collection('logs')
+    .orderBy('date','desc').limit(1).get();
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0,10);
+  if (snap.empty) {
+    notifs.push({ icon:'📝', title:'Aún no has registrado síntomas', sub:'Empieza hoy — tus datos ayudan a personalizar tu seguimiento.', warn:true });
+  } else {
+    const lastDate = snap.docs[0].data().date;
+    const last = new Date(lastDate + 'T12:00:00');
+    const diffDays = Math.round((today - last) / 86400000);
+    if (diffDays === 1) notifs.push({ icon:'⏰', title:'Ayer no registraste', sub:'Llevas 1 día sin anotaciones. ¿Cómo te sentiste ayer?', warn:true });
+    else if (diffDays >= 2) notifs.push({ icon:'📅', title:`${diffDays} días sin registrar`, sub:'Tu historial se desactualiza. Tómate 30 segundos hoy.', warn:true });
+    else if (lastDate === todayStr) notifs.push({ icon:'✅', title:'Registro de hoy completo', sub:'¡Excelente! Tu seguimiento está al día.' });
+  }
+  // 2. Cita médica próxima
+  if (userProfile.medicoCita) {
+    const cita = new Date(userProfile.medicoCita + 'T12:00:00');
+    const diff = Math.round((cita - today) / 86400000);
+    if (diff >= 0 && diff <= 7) notifs.push({ icon:'🩺', title:`Cita médica en ${diff === 0 ? 'hoy' : diff + (diff===1?' día':' días')}`, sub:`${userProfile.medicoNombre||'Tu médico'} · Lleva tu reporte MenoTrack.` });
+    else if (diff < 0 && diff >= -2) notifs.push({ icon:'🩺', title:'Tu cita médica ya pasó', sub:'Recuerda actualizar la fecha de tu próxima consulta.' });
+  }
+  // 3. Síntoma dominante esta semana
+  const weekSnap = await db.collection('patients').doc(currentUser.uid).collection('logs')
+    .orderBy('date','desc').limit(7).get();
+  const wFreq = {};
+  weekSnap.docs.forEach(d => (d.data().symptoms||[]).forEach(s => { wFreq[s.id]=(wFreq[s.id]||0)+1; }));
+  const wTop = Object.entries(wFreq).sort((a,b)=>b[1]-a[1]);
+  if (wTop.length && wTop[0][1] >= 4) {
+    const sym = SYMPTOM_MAP[wTop[0][0]];
+    notifs.push({ icon: sym?.icon||'🔸', title:`"${sym?.label||wTop[0][0]}" 4+ días esta semana`, sub:'Patrón frecuente — coméntalo en tu próxima consulta.' });
+  }
+  // 4. Sin médico registrado
+  if (!userProfile.medicoNombre) notifs.push({ icon:'👩‍⚕️', title:'Datos de tu médico pendientes', sub:'Agrégalos en Perfil para incluirlos en tu reporte.', warn:false });
+  return notifs;
+}
+
+async function refreshNotifications() {
+  const notifs = await computeNotifications();
+  window._notifs = notifs;
+  const hasWarn = notifs.some(n => n.warn);
+  const bell = document.getElementById('bellBtn');
+  if (bell) { bell.classList.toggle('has-notif', notifs.length > 0); }
+  const list = document.getElementById('notifList');
+  if (!list) return;
+  if (!notifs.length) { list.innerHTML = '<div class="notif-empty">Sin notificaciones nuevas 🎉</div>'; return; }
+  list.innerHTML = notifs.map(n => `
+    <div class="notif-item${n.warn?' warn':''}">
+      <div class="notif-icon">${n.icon}</div>
+      <div class="notif-body">
+        <div class="notif-title">${n.title}</div>
+        <div class="notif-sub">${n.sub}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleNotifPanel() {
+  const panel = document.getElementById('notifPanel');
+  const isOpen = panel.classList.contains('open');
+  if (isOpen) { panel.classList.remove('open'); }
+  else {
+    panel.classList.add('open');
+    _notifRead = true;
+    document.getElementById('bellBtn').classList.remove('has-notif');
+    document.getElementById('bellBadge').style.display = 'none';
+  }
+}
+function closeNotifPanel() { document.getElementById('notifPanel').classList.remove('open'); }
+
+/* ── REPORTE MÉDICO DETALLADO ── */
 async function buildReporte() {
   const snap = await db.collection('patients').doc(currentUser.uid).collection('logs').orderBy('date','desc').limit(28).get();
-  const logs = snap.docs.map(d=>d.data());
+  const logs = snap.docs.map(d => d.data());
+  const name   = userProfile.name  || 'Paciente';
+  const stage  = userProfile.stage || 'No especificada';
+  const medico = userProfile.medicoNombre
+    ? `${userProfile.medicoNombre}${userProfile.medicoEsp ? ' · ' + userProfile.medicoEsp : ''}`
+    : 'No registrado';
+  const today = new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+  const daysLogged = logs.length;
+
+  // Frecuencia global (28 días)
   const freq = {};
   logs.forEach(l => (l.symptoms||[]).forEach(s => { freq[s.id]=(freq[s.id]||0)+1; }));
-  const top  = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const name  = userProfile.name || 'Paciente';
-  const stage = userProfile.stage || 'No especificada';
-  const medico = userProfile.medicoNombre ? `${userProfile.medicoNombre} · ${userProfile.medicoEsp||''}` : 'No registrado';
-  const today  = new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
-  window._reporteText = `MENOTRACK C-TECH — REPORTE DE SÍNTOMAS\n${'─'.repeat(40)}\nPaciente: ${name}\nEtapa: ${stage}\nMédico: ${medico}\nFecha: ${today}\nPeriodo: últimos ${logs.length} registros\n${'─'.repeat(40)}\nSÍNTOMAS MÁS FRECUENTES:\n${top.map(([id,c])=>`• ${SYMPTOM_MAP[id]?.icon||''} ${SYMPTOM_MAP[id]?.label||id}: ${c} días`).join('\n')}\n${'─'.repeat(40)}\nEste reporte es informativo. Generado por MenoTrack C-Tech · Carnot`;
+  const topAll = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxFreq = topAll[0]?.[1] || 1;
+
+  // Semanas (4 semanas)
+  const weekCounts = [0,0,0,0];
+  const now = new Date();
+  logs.forEach(l => {
+    const d = new Date(l.date + 'T12:00:00');
+    const diffW = Math.floor((now - d) / (7*86400000));
+    if (diffW < 4) weekCounts[diffW] += (l.symptoms||[]).length;
+  });
+
+  // Últimos 14 días detalle
+  const last14 = logs.slice(0,14);
+
+  // Intensidades promedio (si existen)
+  const intensSum = {}, intensCount = {};
+  logs.forEach(l => (l.symptoms||[]).forEach(s => {
+    if (s.intensity) { intensSum[s.id]=(intensSum[s.id]||0)+s.intensity; intensCount[s.id]=(intensCount[s.id]||0)+1; }
+  }));
+  const intensAvg = Object.fromEntries(Object.keys(intensSum).map(id => [id, (intensSum[id]/intensCount[id]).toFixed(1)]));
+
+  // Texto plano para copiar/compartir
+  const sep = '─'.repeat(38);
+  const txtLines = [
+    '📋 REPORTE MENOTRACK — CONSULTA MÉDICA',sep,
+    `👤 Paciente: ${name}`,
+    `🌿 Etapa: ${stage}`,
+    `🩺 Médico/a: ${medico}`,
+    `📅 Generado: ${today}`,
+    `📊 Días con registro: ${daysLogged} de los últimos 28`,
+    sep,
+    '🔝 SÍNTOMAS MÁS FRECUENTES:',
+    ...topAll.map(([id,c]) => {
+      const pct = Math.round(c/daysLogged*100);
+      const avg = intensAvg[id] ? ` (intensidad prom: ${intensAvg[id]}/3)` : '';
+      return `• ${SYMPTOM_MAP[id]?.label||id}: ${c} días (${pct}%)${avg}`;
+    }),
+    sep,
+    '📆 ACTIVIDAD POR SEMANA (síntomas totales):',
+    `• Esta semana: ${weekCounts[0]}`,
+    `• Hace 1 sem:  ${weekCounts[1]}`,
+    `• Hace 2 sem:  ${weekCounts[2]}`,
+    `• Hace 3 sem:  ${weekCounts[3]}`,
+    sep,
+    '📓 ÚLTIMOS 14 DÍAS:',
+    ...last14.map(l => {
+      const symsText = (l.symptoms||[]).map(s => SYMPTOM_MAP[s.id]?.label||s.id).join(', ') || 'Sin síntomas';
+      return `${l.date}: ${symsText}`;
+    }),
+    sep,
+    '⚠️ Este reporte es informativo. El diagnóstico corresponde exclusivamente al médico.',
+    'Generado por MenoTrack · C-Tech Carnot'
+  ];
+  window._reporteText = txtLines.join('\n');
+
+  // HTML visual
   document.getElementById('reporteContent').innerHTML = `
-    <div class="insight-card" style="margin-bottom:14px;">
-      <div class="tag">${today}</div>
-      <p><strong>Paciente:</strong> ${name}<br><strong>Etapa:</strong> ${stage}<br><strong>Médico:</strong> ${medico}<br><br>
-      <strong>Síntomas más frecuentes (${logs.length} días):</strong><br>
-      ${top.map(([id,c])=>`${SYMPTOM_MAP[id]?.icon||''} ${SYMPTOM_MAP[id]?.label||id}: ${c} días`).join('<br>')||'Sin datos suficientes'}</p>
+    <div class="rep-section">
+      <div class="rep-label">Datos del paciente</div>
+      <div class="rep-row"><span class="rep-key">Nombre</span><span class="rep-val">${name}</span></div>
+      <div class="rep-row"><span class="rep-key">Etapa</span><span class="rep-val">${stage}</span></div>
+      <div class="rep-row"><span class="rep-key">Médico/a</span><span class="rep-val">${medico}</span></div>
+      <div class="rep-row"><span class="rep-key">Fecha del reporte</span><span class="rep-val">${today}</span></div>
+      <div class="rep-row"><span class="rep-key">Días registrados</span><span class="rep-val">${daysLogged} / 28</span></div>
+    </div>
+    <div class="rep-section">
+      <div class="rep-label">Síntomas más frecuentes</div>
+      ${topAll.length ? topAll.map(([id,c]) => {
+        const pct = Math.round(c/Math.max(daysLogged,1)*100);
+        const lbl = SYMPTOM_MAP[id]?.label || id;
+        const avg = intensAvg[id] ? `<span style="font-size:9px;color:var(--text-muted);margin-left:4px;">int. ${intensAvg[id]}/3</span>` : '';
+        return `<div class="rep-bar-row">
+          <span class="rep-bar-label">${SYMPTOM_MAP[id]?.icon||''} ${lbl}</span>
+          <div class="rep-bar-track"><div class="rep-bar-fill" style="width:${Math.round(c/maxFreq*100)}%"></div></div>
+          <span class="rep-bar-num">${c}d${avg}</span>
+        </div>`;
+      }).join('') : '<div style="font-size:12px;color:var(--text-muted);padding:8px 0;">Sin datos suficientes</div>'}
+    </div>
+    <div class="rep-section">
+      <div class="rep-label">Actividad semanal (síntomas totales)</div>
+      <div class="rep-week-grid">
+        ${['Esta semana','Hace 1 sem','Hace 2 sem','Hace 3 sem'].map((lbl,i) => `
+          <div class="rep-week-cell">
+            <div class="rep-week-num">${weekCounts[i]}</div>
+            <div class="rep-week-sub">${lbl}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="rep-section">
+      <div class="rep-label">Últimos 14 días</div>
+      ${last14.length ? last14.map(l => {
+        const syms = (l.symptoms||[]).map(s => `${SYMPTOM_MAP[s.id]?.icon||''}${SYMPTOM_MAP[s.id]?.label||s.id}`).join(', ');
+        const dateStr = new Date(l.date+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'short'});
+        return `<div class="rep-day-row">
+          <span class="rep-day-date">${dateStr}</span>
+          <span class="rep-day-syms">${syms||'<span class="rep-day-empty">Sin síntomas</span>'}</span>
+        </div>`;
+      }).join('') : '<div style="font-size:12px;color:var(--text-muted);padding:8px 0;">Sin registros</div>'}
     </div>`;
 }
 
 function copyReporte() {
   navigator.clipboard.writeText(window._reporteText||'').then(()=>showToast('📋 Reporte copiado')).catch(()=>showToast('Copia el texto manualmente'));
-  closeModal('modalReporte');
+}
+
+async function shareReporte() {
+  const text = window._reporteText || '';
+  if (navigator.share) {
+    try { await navigator.share({ title:'Mi reporte MenoTrack', text }); }
+    catch(e) { if (e.name !== 'AbortError') copyReporte(); }
+  } else { copyReporte(); }
 }
 
 async function savePerfil() {
