@@ -514,18 +514,17 @@ textarea { resize: none; }
 .card-title .dot { background: var(--pink) !important; }
 .card-title .dot.teal { background: var(--teal) !important; }
 
-/* Quick symptom buttons */
-.quick-btn {
-  background: #F5F7FA !important;
-  border: 1.5px solid #E8ECF2 !important;
-}
-.quick-btn.active {
-  background: var(--pink-bg) !important;
-  border-color: rgba(233,30,140,0.35) !important;
-}
-.quick-btn .q-label { color: var(--text-soft) !important; }
-.quick-btn.active .q-label { color: var(--pink) !important; }
-.quick-btn .q-icon { font-size: 22px !important; }
+/* Quick symptom buttons — aqua light */
+.quick-btn { background: rgba(78,203,202,.06) !important; border-color: rgba(78,203,202,.2) !important; }
+.quick-btn.active { background: rgba(78,203,202,.14) !important; border-color: rgba(78,203,202,.42) !important; }
+.quick-btn .q-label { color: rgba(26,26,46,.45) !important; }
+.quick-btn.active .q-label { color: #1a9998 !important; }
+.quick-btn .q-icon svg { stroke: rgba(78,203,202,.55) !important; }
+.quick-btn.active .q-icon svg { stroke: #1a9998 !important; filter: none !important; }
+/* rq-wrap light */
+.rq-header { background: rgba(78,203,202,.06) !important; border-color: rgba(78,203,202,.22) !important; }
+.rq-body { background: rgba(78,203,202,.03) !important; border-color: rgba(78,203,202,.16) !important; }
+.btn-save-aqua { color: #1a9998 !important; border-color: rgba(78,203,202,.38) !important; background: rgba(78,203,202,.08) !important; }
 
 /* Insight card */
 .insight-card {
@@ -805,10 +804,12 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
   /* Cards */
   .card { background: rgba(255,255,255,0.07) !important; border: 1px solid rgba(255,255,255,0.09) !important; box-shadow: none !important; }
   .card-title { color: rgba(255,255,255,0.55) !important; }
-  .quick-btn { background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.09) !important; }
-  .quick-btn .q-label { color: rgba(255,255,255,0.60) !important; }
-  .quick-btn.active { background: rgba(233,30,140,0.12) !important; border-color: rgba(233,30,140,0.45) !important; }
-  .quick-btn.active .q-label { color: #FF69B4 !important; }
+  .quick-btn { background: rgba(78,203,202,.05) !important; border-color: rgba(78,203,202,.15) !important; }
+  .quick-btn .q-label { color: rgba(255,255,255,.35) !important; }
+  .quick-btn.active { background: rgba(78,203,202,.16) !important; border-color: rgba(78,203,202,.48) !important; }
+  .quick-btn.active .q-label { color: #4ECBCA !important; }
+  .quick-btn .q-icon svg { stroke: rgba(78,203,202,.45) !important; }
+  .quick-btn.active .q-icon svg { stroke: #4ECBCA !important; }
 
   /* Insight */
   .insight-card { background: linear-gradient(135deg, rgba(233,30,140,0.18) 0%, rgba(10,0,20,0.65) 100%) !important; border-color: rgba(233,30,140,0.22) !important; }
@@ -907,6 +908,30 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
   .daily-sub { color: rgba(255,255,255,0.62) !important; }
 }
 /* ══ END DARK MODE ══════════════════════════════════════════════════════ */
+
+/* ── REGISTRO RÁPIDO DESPLEGABLE ── */
+.rq-wrap{margin-top:10px}
+.rq-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;background:rgba(78,203,202,.07);border:1px solid rgba(78,203,202,.22);border-radius:14px;transition:background .2s}
+.rq-header.open{border-radius:14px 14px 0 0;border-bottom-color:transparent}
+.rq-header:hover{background:rgba(78,203,202,.12)}
+.rq-htitle{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.3px}
+.rq-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px rgba(78,203,202,.55);flex-shrink:0}
+.rq-chevron{color:rgba(78,203,202,.6);font-size:13px;transition:transform .25s}
+.rq-header.open .rq-chevron{transform:rotate(180deg)}
+.rq-body{display:none;padding:14px;background:rgba(78,203,202,.04);border:1px solid rgba(78,203,202,.18);border-top:none;border-radius:0 0 14px 14px}
+.rq-body.open{display:block}
+.quick-btn{background:rgba(78,203,202,.06);border:1px solid rgba(78,203,202,.16);border-radius:14px;padding:11px 6px 9px;cursor:pointer;text-align:center;transition:all .17s;display:flex;flex-direction:column;align-items:center;gap:5px;-webkit-tap-highlight-color:transparent}
+.quick-btn:active{transform:scale(.93)}
+.quick-btn.active{background:rgba(78,203,202,.16);border-color:rgba(78,203,202,.48);box-shadow:0 0 0 1px rgba(78,203,202,.12) inset}
+.q-icon{width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+.q-icon svg{width:22px;height:22px;fill:none;stroke:rgba(78,203,202,.48);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:all .17s}
+.quick-btn.active .q-icon svg{stroke:#4ECBCA;filter:drop-shadow(0 0 4px rgba(78,203,202,.5))}
+.q-label{font-size:9.5px;color:rgba(255,255,255,.38);font-weight:500;line-height:1.25;transition:color .17s}
+.quick-btn.active .q-label{color:var(--teal)}
+.btn-save-aqua{width:100%;padding:13px;background:rgba(78,203,202,.10);border:1.5px solid rgba(78,203,202,.35);border-radius:12px;color:var(--teal);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-save-aqua:hover{background:rgba(78,203,202,.18);border-color:rgba(78,203,202,.55)}
+.btn-save-aqua:active{transform:scale(.97)}
+.btn-save-aqua svg{stroke:currentColor}
 </style>
 </head>
 <body>
@@ -1045,11 +1070,65 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
       </div>
     </div>
 
-    <!-- Week strip -->
+    <!-- Week strip + Registro rápido desplegable -->
     <div class="card" style="padding:14px 16px 12px;">
       <div class="card-title" style="margin-bottom:12px;"><span class="dot teal"></span>Tu semana</div>
       <div class="week-strip" id="weekStrip">
         <div style="height:36px;width:100%;background:rgba(255,255,255,0.03);border-radius:8px;"></div>
+      </div>
+      <!-- Registro rápido desplegable -->
+      <div class="rq-wrap">
+        <div class="rq-header" id="rqHeader" onclick="toggleRegistroRapido()">
+          <div class="rq-htitle">
+            <span class="rq-dot"></span>Registro rápido
+          </div>
+          <span class="rq-chevron">▾</span>
+        </div>
+        <div class="rq-body" id="rqBody">
+          <div class="quick-grid" id="quickGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">
+            <button class="quick-btn" data-sym="bochorno" onclick="toggleQuick(this)">
+              <span class="q-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 14c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
+              <span class="q-label">Bochorno</span>
+            </button>
+            <button class="quick-btn" data-sym="sudoracion" onclick="toggleQuick(this)">
+              <span class="q-icon"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span>
+              <span class="q-label">Sudoración nocturna</span>
+            </button>
+            <button class="quick-btn" data-sym="sueno" onclick="toggleQuick(this)">
+              <span class="q-icon"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+              <span class="q-label">Mal sueño</span>
+            </button>
+            <button class="quick-btn" data-sym="cansancio" onclick="toggleQuick(this)">
+              <span class="q-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+              <span class="q-label">Cansancio</span>
+            </button>
+            <button class="quick-btn" data-sym="niebla" onclick="toggleQuick(this)">
+              <span class="q-icon"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></span>
+              <span class="q-label">Niebla mental</span>
+            </button>
+            <button class="quick-btn" data-sym="animo" onclick="toggleQuick(this)">
+              <span class="q-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span>
+              <span class="q-label">Cambios de ánimo</span>
+            </button>
+            <button class="quick-btn" data-sym="ansiedad" onclick="toggleQuick(this)">
+              <span class="q-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+              <span class="q-label">Ansiedad</span>
+            </button>
+            <button class="quick-btn" data-sym="articular" onclick="toggleQuick(this)">
+              <span class="q-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><path d="M12 8v8M9 22l3-6 3 6M8.5 14.5c-1.5 1-2.5 2.5-2.5 4.5M15.5 14.5c1.5 1 2.5 2.5 2.5 4.5"/></svg></span>
+              <span class="q-label">Dolor articular</span>
+            </button>
+            <button class="quick-btn" data-sym="energia" onclick="toggleQuick(this)">
+              <span class="q-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+              <span class="q-label">Poca energía</span>
+            </button>
+          </div>
+          <div class="save-status"><div class="save-dot" id="saveDot"></div><span id="saveStatusText"></span></div>
+          <button class="btn-save-aqua" onclick="saveQuickLog()" id="btnSaveQuick">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Guardar registro del día
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1073,24 +1152,6 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
     <div class="insight-card" id="weekInsightCard">
       <div class="tag">✨ Esta semana</div>
       <p id="weekInsightText">Registra síntomas durante varios días para ver tu resumen semanal personalizado.</p>
-    </div>
-
-    <!-- Registro rápido -->
-    <div class="card">
-      <div class="card-title"><span class="dot"></span>Registro rápido</div>
-      <div class="quick-grid" id="quickGrid">
-        <button class="quick-btn" data-sym="bochorno" onclick="toggleQuick(this)"><span class="q-icon">🔥</span><span class="q-label">Bochorno</span></button>
-        <button class="quick-btn" data-sym="sudoracion" onclick="toggleQuick(this)"><span class="q-icon">💧</span><span class="q-label">Sudoración nocturna</span></button>
-        <button class="quick-btn" data-sym="sueno" onclick="toggleQuick(this)"><span class="q-icon">😴</span><span class="q-label">Mal sueño</span></button>
-        <button class="quick-btn" data-sym="cansancio" onclick="toggleQuick(this)"><span class="q-icon">🪫</span><span class="q-label">Cansancio</span></button>
-        <button class="quick-btn" data-sym="niebla" onclick="toggleQuick(this)"><span class="q-icon">🌫️</span><span class="q-label">Niebla mental</span></button>
-        <button class="quick-btn" data-sym="animo" onclick="toggleQuick(this)"><span class="q-icon">🎭</span><span class="q-label">Cambios de ánimo</span></button>
-        <button class="quick-btn" data-sym="ansiedad" onclick="toggleQuick(this)"><span class="q-icon">😰</span><span class="q-label">Ansiedad</span></button>
-        <button class="quick-btn" data-sym="articular" onclick="toggleQuick(this)"><span class="q-icon">🦴</span><span class="q-label">Dolor articular</span></button>
-        <button class="quick-btn" data-sym="energia" onclick="toggleQuick(this)"><span class="q-icon">⚡</span><span class="q-label">Poca energía</span></button>
-      </div>
-      <div class="save-status"><div class="save-dot" id="saveDot"></div><span id="saveStatusText"></span></div>
-      <button class="btn-primary" onclick="saveQuickLog()" id="btnSaveQuick">💾 Guardar registro del día</button>
     </div>
 
     <div class="disclaimer">Este contenido es de carácter informativo y no sustituye la consulta médica. Ante cualquier síntoma, consulta a tu médico.</div>
@@ -2100,6 +2161,12 @@ async function buildWeekStrip() {
 }
 
 function toggleQuick(btn) { btn.classList.toggle('active'); }
+function toggleRegistroRapido() {
+  const h = document.getElementById('rqHeader');
+  const b = document.getElementById('rqBody');
+  h.classList.toggle('open');
+  b.classList.toggle('open');
+}
 function setRegView(view, btn) {
   ['sintomas','medicion','medicacion'].forEach(v => document.getElementById('reg-'+v).style.display = v===view?'block':'none');
   document.querySelectorAll('.pill-toggle button').forEach(b => b.classList.remove('active'));
