@@ -768,6 +768,109 @@ textarea:focus, input:focus, select:focus {
 body, button, input, select, textarea { font-family: 'Nunito', sans-serif !important; }
 
 /* ══ END DISEÑO v2 ══════════════════════════════════════════════════════ */
+
+/* ══ DARK MODE — activa automáticamente con el sistema ════════════════ */
+@media (prefers-color-scheme: dark) {
+  body { background: #0d0010 !important; color: #ffffff !important; }
+
+  /* Header */
+  .app-header { background: rgba(10,0,20,0.92) !important; border-bottom-color: rgba(233,30,140,0.22) !important; backdrop-filter: blur(20px) !important; }
+  .greeting-hello { color: #ffffff !important; }
+  .greeting-hello .g-name { color: #4ECBCA !important; }
+  .greeting-date-sub { color: rgba(255,255,255,0.55) !important; }
+  .header-avatar-btn { background: rgba(233,30,140,0.12) !important; border-color: rgba(233,30,140,0.35) !important; }
+
+  /* Cards */
+  .card { background: rgba(255,255,255,0.07) !important; border: 1px solid rgba(255,255,255,0.09) !important; box-shadow: none !important; }
+  .card-title { color: rgba(255,255,255,0.55) !important; }
+  .quick-btn { background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.09) !important; }
+  .quick-btn .q-label { color: rgba(255,255,255,0.60) !important; }
+  .quick-btn.active { background: rgba(233,30,140,0.12) !important; border-color: rgba(233,30,140,0.45) !important; }
+  .quick-btn.active .q-label { color: #FF69B4 !important; }
+
+  /* Insight */
+  .insight-card { background: linear-gradient(135deg, rgba(233,30,140,0.18) 0%, rgba(10,0,20,0.65) 100%) !important; border-color: rgba(233,30,140,0.22) !important; }
+  .insight-card .tag { background: rgba(233,30,140,0.12) !important; color: #FF69B4 !important; border-color: rgba(233,30,140,0.25) !important; }
+  .insight-card p { color: rgba(255,255,255,0.82) !important; }
+  .insight-card strong { color: #FF69B4 !important; }
+
+  /* Alert */
+  .alert-banner { background: rgba(233,30,140,0.10) !important; border-color: rgba(233,30,140,0.35) !important; }
+  .alert-banner .a-text { color: rgba(255,255,255,0.82) !important; }
+  .alert-banner strong { color: #FF69B4 !important; }
+
+  /* Pill toggle */
+  .pill-toggle { background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.09) !important; }
+  .pill-toggle button { color: rgba(255,255,255,0.55) !important; }
+  .pill-toggle button.active { background: var(--pink) !important; color: white !important; }
+
+  /* Stats */
+  .stat-chip { background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.09) !important; }
+  .stat-chip .val { color: #ffffff !important; }
+  .stat-chip .lbl { color: rgba(255,255,255,0.55) !important; }
+
+  /* Historial */
+  .history-item { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.09) !important; box-shadow: none !important; }
+  .history-date-box { background: rgba(233,30,140,0.12) !important; border-color: rgba(233,30,140,0.28) !important; }
+  .history-date-box .day { color: #fff !important; }
+  .history-date-box .month { color: #FF69B4 !important; }
+  .h-title { color: #fff !important; }
+  .h-notes { color: rgba(255,255,255,0.45) !important; }
+  .s-tag { background: rgba(255,255,255,0.07) !important; color: rgba(255,255,255,0.55) !important; border-color: rgba(255,255,255,0.09) !important; }
+  .s-tag.high { background: rgba(233,30,140,0.12) !important; color: #FF69B4 !important; border-color: rgba(233,30,140,0.3) !important; }
+  .s-tag.med { background: rgba(255,160,40,0.12) !important; color: #ffb347 !important; border-color: rgba(255,160,40,0.28) !important; }
+
+  /* Inputs */
+  textarea, input[type="text"], input[type="number"], select { background: rgba(255,255,255,0.07) !important; border-color: rgba(255,255,255,0.09) !important; color: #fff !important; }
+  textarea:focus, input:focus, select:focus { border-color: var(--pink) !important; background: rgba(233,30,140,0.08) !important; }
+
+  /* Share / profile / settings */
+  .share-card { background: linear-gradient(135deg, rgba(233,30,140,0.22) 0%, rgba(20,0,35,0.8) 100%) !important; border-color: rgba(233,30,140,0.22) !important; }
+  .share-card h3, .share-card p { color: rgba(255,255,255,0.88) !important; }
+  .setting-row { border-bottom-color: rgba(255,255,255,0.06) !important; }
+  .s-title { color: #fff !important; }
+  .s-sub { color: rgba(255,255,255,0.55) !important; }
+  .setting-arrow { color: rgba(255,255,255,0.18) !important; }
+  .profile-avatar-large { background: rgba(233,30,140,0.12) !important; border-color: rgba(233,30,140,0.22) !important; }
+  .profile-name { color: #fff !important; }
+  .profile-sub { color: rgba(255,255,255,0.55) !important; }
+
+  /* Modal */
+  .modal-sheet { background: #180025 !important; border-color: rgba(233,30,140,0.22) !important; }
+  .modal-handle { background: rgba(255,255,255,0.15) !important; }
+  .modal-title { color: #fff !important; }
+
+  /* Misc */
+  .disclaimer { border-left-color: rgba(233,30,140,0.38) !important; background: rgba(255,255,255,0.04) !important; color: rgba(255,255,255,0.50) !important; }
+  .brand-footer { color: rgba(255,255,255,0.18) !important; }
+  .empty-state { color: rgba(255,255,255,0.50) !important; }
+  .ring-info h3 { color: #fff !important; }
+  .ring-info p { color: rgba(255,255,255,0.75) !important; }
+  .btn-secondary { background: rgba(255,255,255,0.07) !important; color: rgba(255,255,255,0.80) !important; border-color: rgba(255,255,255,0.09) !important; }
+  .auth-field label { color: rgba(255,255,255,0.55) !important; }
+
+  /* Nav oscuro */
+  .bottom-nav { background: rgba(6,0,12,0.97) !important; border-top-color: rgba(255,255,255,0.05) !important; box-shadow: none !important; }
+  .nav-item .label { color: rgba(255,255,255,0.50) !important; }
+  .nav-item.active { background: rgba(233,30,140,0.13) !important; }
+  .nav-item.active .label { color: var(--pink) !important; font-weight: 700 !important; }
+
+  /* Week strip oscuro */
+  .wday-circle { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.08) !important; color: rgba(255,255,255,0.50) !important; }
+  .wday-circle.today { background: #fff !important; color: #0d0010 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important; border-color: transparent !important; }
+  .wday-circle.has-log:not(.today) { background: rgba(233,30,140,0.12) !important; border-color: rgba(233,30,140,0.3) !important; color: #FF69B4 !important; }
+  .wday-circle.today.has-log { background: var(--pink) !important; color: #fff !important; box-shadow: 0 4px 14px rgba(233,30,140,0.4) !important; }
+  .wday-name { color: rgba(255,255,255,0.35) !important; }
+
+  /* Daily card oscuro — navy→teal */
+  .daily-card { background: linear-gradient(140deg, #1A3A5C 0%, #0d2040 55%, rgba(78,203,202,0.55) 100%) !important; box-shadow: 0 8px 32px rgba(0,0,0,0.42) !important; }
+  .daily-card::after { background: radial-gradient(circle at 82% 50%, rgba(233,30,140,0.22) 0%, transparent 60%) !important; }
+  .daily-label { color: rgba(255,255,255,0.55) !important; }
+  .daily-label::before { background: #4ECBCA !important; box-shadow: 0 0 6px #4ECBCA !important; }
+  .daily-title { color: #fff !important; text-shadow: none !important; }
+  .daily-sub { color: rgba(255,255,255,0.62) !important; }
+}
+/* ══ END DARK MODE ══════════════════════════════════════════════════════ */
 </style>
 </head>
 <body>
