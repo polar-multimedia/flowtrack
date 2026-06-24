@@ -479,8 +479,12 @@ textarea { resize: none; }
 
 .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 14px; }
 .empty-state .empty-icon { font-size: 40px; margin-bottom: 10px; }
-.brand-footer { text-align: center; padding: 8px; font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0.5px; }
-.brand-footer span { color: var(--pink-light); font-weight: 600; }
+.brand-footer { text-align: center; padding: 16px 8px 10px; }
+.brand-footer .bf-apoyado { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 0.5px; margin-bottom: 5px; }
+.brand-footer .bf-logo { height: 22px; width: auto; opacity: 0.85; display: block; margin: 0 auto 8px; }
+.brand-footer .bf-copy { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0.3px; }
+.brand-footer .bf-copy a { color: rgba(255,255,255,0.3); text-decoration: none; }
+.brand-footer .bf-copy a:hover { color: var(--teal); }
 #photoInput { display: none; }
 
 /* ══ LIGHT THEME OVERRIDES ════════════════════════════════════════════ */
@@ -631,8 +635,10 @@ textarea:focus, input:focus, select:focus {
 }
 
 /* Brand footer */
-.brand-footer { color: #BCC3CE !important; }
-.brand-footer span { color: var(--pink) !important; }
+.brand-footer .bf-apoyado { color: #8A94A6 !important; }
+.brand-footer .bf-copy { color: #8A94A6 !important; }
+.brand-footer .bf-copy a { color: #8A94A6 !important; }
+.brand-footer .bf-logo { opacity: 1 !important; }
 
 /* Week bar chart */
 .wday-label { color: var(--text-muted) !important; }
@@ -1058,7 +1064,11 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
     </div>
 
     <div class="disclaimer">Este contenido es de carácter informativo y no sustituye la consulta médica. Ante cualquier síntoma, consulta a tu médico.</div>
-    <div class="brand-footer">Apoyado por <span>C-Tech · Carnot</span></div>
+    <div class="brand-footer">
+      <div class="bf-apoyado">Apoyado por:</div>
+      <img class="bf-logo" src="logo-ctech.png" alt="C-Tech®">
+      <div class="bf-copy">© <a href="https://polarmultimedia.com" target="_blank" rel="noopener">Polar Multimedia</a> 2026</div>
+    </div>
   </div>
 
   <!-- REGISTRAR -->
