@@ -10,6 +10,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <style>
 :root {
@@ -157,6 +158,47 @@ body {
 .btn-auth:hover { opacity: 0.9; }
 .auth-error { font-size: 12px; color: #ff8fb0; text-align: center; margin-top: 10px; min-height: 18px; }
 .auth-disclaimer { font-size: 10px; color: rgba(255,255,255,0.35); text-align: center; margin-top: 16px; line-height: 1.5; }
+.btn-google {
+  width: 100%; background: #ffffff; color: #1a1a1a; border: none;
+  border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 600;
+  font-family: 'Lexend', sans-serif; cursor: pointer; margin-bottom: 4px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3); transition: opacity 0.2s;
+}
+.btn-google:hover { opacity: 0.92; }
+.auth-divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; }
+.auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background: rgba(255,255,255,0.12); }
+.auth-divider span { font-size: 11px; color: rgba(255,255,255,0.3); white-space: nowrap; }
+
+/* ── ONBOARDING ── */
+#onboardingScreen {
+  display: none; min-height: 100vh; background: var(--dark);
+  flex-direction: column; align-items: center; justify-content: flex-start;
+  padding: 60px 20px 40px;
+}
+.ob-avatar {
+  width: 90px; height: 90px; border-radius: 50%;
+  border: 3px solid var(--pink); margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px; overflow: hidden; background: var(--pink-bg);
+  position: relative;
+}
+.ob-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.ob-title { font-size: 24px; font-weight: 800; color: var(--text); text-align: center; margin-bottom: 4px; }
+.ob-sub { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 28px; line-height: 1.5; }
+.ob-step { font-size: 10px; font-weight: 700; color: var(--pink); text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 8px; }
+.ob-card { background: rgba(20,0,30,0.82); border: 1px solid var(--border); border-radius: 20px; padding: 22px 20px; width: 100%; max-width: 390px; }
+
+/* ── CHARTS ── */
+.chart-wrap { position: relative; width: 100%; margin-bottom: 16px; }
+.chart-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+.chart-period { display: flex; gap: 6px; margin-bottom: 12px; }
+.chart-period button {
+  font-family: 'Lexend', sans-serif; font-size: 11px; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.12); background: none; color: var(--text-muted);
+  border-radius: 20px; padding: 4px 12px; cursor: pointer; transition: all 0.2s;
+}
+.chart-period button.active { background: var(--pink); color: white; border-color: var(--pink); }
 
 /* ── APP ── */
 #appScreen { display: none; }
@@ -456,6 +498,11 @@ textarea { resize: none; }
     </div>
     <img src="tu-diario-con-flow.png" alt="Tu diario con flow" style="display:block;margin:0 auto 24px;width:68%;max-width:272px;filter:drop-shadow(0 0 16px var(--pink-glow))">
     <div class="auth-card">
+      <button class="btn-google" onclick="doGoogleSignIn()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.5 30.3 0 24 0 14.6 0 6.6 5.5 2.7 13.5l7.8 6C12.4 13.2 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.2-.4-4.7H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.3z"/><path fill="#FBBC05" d="M10.5 28.5c-.5-1.5-.8-3-.8-4.5s.3-3 .8-4.5l-7.8-6C1 16.5 0 20.1 0 24s1 7.5 2.7 10.5l7.8-6z"/><path fill="#34A853" d="M24 48c6.3 0 11.6-2.1 15.5-5.7l-7.5-5.8c-2.1 1.4-4.8 2.3-8 2.3-6.2 0-11.6-3.7-13.5-9l-7.8 6C6.6 42.5 14.6 48 24 48z"/></svg>
+        Continuar con Google
+      </button>
+      <div class="auth-divider"><span>o usa tu correo</span></div>
       <div class="auth-tabs">
         <button class="auth-tab active" onclick="switchTab('login',this)">Iniciar sesión</button>
         <button class="auth-tab" onclick="switchTab('register',this)">Crear cuenta</button>
@@ -487,6 +534,47 @@ textarea { resize: none; }
     </div>
     <div class="auth-disclaimer">Este contenido es de carácter informativo y no sustituye la consulta médica. Consulta a tu médico ante cualquier síntoma.</div>
   </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboardingScreen" style="display:none;min-height:100vh;background:var(--dark);padding:60px 20px 40px;overflow-y:auto;">
+  <div style="text-align:center;margin-bottom:24px;">
+    <div class="ob-avatar" id="obAvatar">
+      <img id="obAvatarImg" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
+      <span id="obAvatarEmoji">👩</span>
+    </div>
+    <div class="ob-step">Bienvenida a MenoTrack</div>
+    <div class="ob-title">¡Hola, <span id="obFirstName">!</span></div>
+    <div class="ob-sub">Cuéntanos un poco sobre ti para personalizar tu experiencia.</div>
+  </div>
+  <div class="ob-card">
+    <div class="auth-field">
+      <label>¿Cómo quieres que te llamemos?</label>
+      <input type="text" id="obName" placeholder="Tu nombre">
+    </div>
+    <div class="auth-field">
+      <label>¿Cuál es tu etapa actual?</label>
+      <select id="obStage">
+        <option value="">Selecciona tu etapa...</option>
+        <option value="Perimenopausia (ciclo irregular)">🌀 Perimenopausia — ciclo irregular</option>
+        <option value="Menopausia (último año sin periodo)">🌸 Menopausia — último año sin periodo</option>
+        <option value="Posmenopausia (más de 1 año sin periodo)">🌺 Posmenopausia — más de 1 año sin periodo</option>
+        <option value="Menopausia quirúrgica — histerectomía parcial">⚕️ Menopausia quirúrgica — histerectomía parcial</option>
+        <option value="Menopausia quirúrgica — histerectomía total">⚕️ Menopausia quirúrgica — histerectomía total</option>
+        <option value="No estoy segura">🤷 No estoy segura todavía</option>
+      </select>
+    </div>
+    <div class="auth-field">
+      <label>Año de nacimiento (opcional)</label>
+      <input type="number" id="obBirthYear" placeholder="Ej: 1975" min="1950" max="2000">
+    </div>
+    <div class="auth-field">
+      <label>Nombre de tu médico/a (opcional)</label>
+      <input type="text" id="obMedico" placeholder="Dr. / Dra. ...">
+    </div>
+    <button class="btn-auth" onclick="saveOnboarding()" style="margin-top:8px;">Empezar mi seguimiento →</button>
+  </div>
+  <div class="auth-disclaimer" style="margin-top:20px;">Este contenido es de carácter informativo y no sustituye la consulta médica.</div>
 </div>
 
 <!-- APP -->
@@ -718,6 +806,37 @@ textarea { resize: none; }
     <div class="disclaimer">Este contenido es de carácter informativo y no sustituye la consulta médica.</div>
   </div>
 
+  <!-- GRÁFICAS -->
+  <div class="screen" id="screen-graficas">
+    <div style="margin-top:14px;"></div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Tendencia de síntomas</div>
+      <div class="chart-period">
+        <button class="active" onclick="setChartPeriod(7,this)">7 días</button>
+        <button onclick="setChartPeriod(14,this)">14 días</button>
+        <button onclick="setChartPeriod(30,this)">30 días</button>
+      </div>
+      <div class="chart-wrap" style="height:180px;">
+        <canvas id="chartTendencia"></canvas>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:4px;">Número de síntomas por día</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:#a78bfa"></span>Frecuencia por síntoma</div>
+      <div class="chart-wrap" style="height:220px;">
+        <canvas id="chartFrecuencia"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot teal"></span>Intensidad acumulada</div>
+      <div class="chart-wrap" style="height:180px;">
+        <canvas id="chartIntensidad"></canvas>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:4px;">Suma de intensidad L=1, M=2, A=3</div>
+    </div>
+    <div class="disclaimer">Este contenido es de carácter informativo y no sustituye la consulta médica.</div>
+  </div>
+
   <!-- HISTORIAL -->
   <div class="screen" id="screen-historial">
     <div style="margin-top:14px;"></div>
@@ -771,7 +890,7 @@ textarea { resize: none; }
   <nav class="bottom-nav">
     <button class="nav-item active" data-nav="inicio" onclick="goTo('inicio',this)"><span class="icon">🏠</span><span class="label">Inicio</span><span class="nav-dot"></span></button>
     <button class="nav-item" data-nav="registrar" onclick="goTo('registrar',this)"><span class="icon">✏️</span><span class="label">Registrar</span><span class="nav-dot"></span></button>
-    <button class="nav-item" data-nav="progreso" onclick="goTo('progreso',this)"><span class="icon">📊</span><span class="label">Progreso</span><span class="nav-dot"></span></button>
+    <button class="nav-item" data-nav="graficas" onclick="goTo('graficas',this)"><span class="icon">📈</span><span class="label">Gráficas</span><span class="nav-dot"></span></button>
     <button class="nav-item" data-nav="historial" onclick="goTo('historial',this)"><span class="icon">📋</span><span class="label">Historial</span><span class="nav-dot"></span></button>
     <button class="nav-item" data-nav="perfil" onclick="goTo('perfil',this)"><span class="icon">👤</span><span class="label">Perfil</span><span class="nav-dot"></span></button>
   </nav>
@@ -914,11 +1033,60 @@ firebase.auth().onAuthStateChanged(async user => {
   if (user) {
     currentUser = user;
     await loadUserProfile();
-    showApp();
+    if (!userProfile.stage) {
+      showOnboarding(user);
+    } else {
+      showApp();
+    }
   } else {
     document.getElementById('authScreen').style.display = 'flex';
   }
 });
+
+async function doGoogleSignIn() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    await auth.signInWithPopup(provider);
+  } catch(e) {
+    document.getElementById('authError').textContent = 'Error al iniciar con Google: ' + e.message;
+  }
+}
+
+function showOnboarding(user) {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('onboardingScreen').style.display = 'block';
+  const name = userProfile.name || user.displayName || '';
+  const first = name.split(' ')[0] || 'amiga';
+  document.getElementById('obFirstName').textContent = first + '!';
+  document.getElementById('obName').value = name;
+  if (user.photoURL) {
+    const img = document.getElementById('obAvatarImg');
+    img.src = user.photoURL;
+    img.style.display = 'block';
+    document.getElementById('obAvatarEmoji').style.display = 'none';
+  }
+}
+
+async function saveOnboarding() {
+  const name  = document.getElementById('obName').value.trim();
+  const stage = document.getElementById('obStage').value;
+  const birth = document.getElementById('obBirthYear').value;
+  const medico = document.getElementById('obMedico').value.trim();
+  if (!name)  { showToast('Ingresa tu nombre'); return; }
+  if (!stage) { showToast('Selecciona tu etapa'); return; }
+  const data = {
+    name, stage,
+    email: currentUser.email || '',
+    photoURL: currentUser.photoURL || '',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+  if (birth)  data.birthYear = parseInt(birth);
+  if (medico) data.medicoNombre = medico;
+  await db.collection('patients').doc(currentUser.uid).set(data, { merge: true });
+  userProfile = { ...userProfile, ...data };
+  document.getElementById('onboardingScreen').style.display = 'none';
+  showApp();
+}
 
 function switchTab(tab, btn) {
   document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
@@ -986,7 +1154,8 @@ function updateHeaderUser() {
   if (userProfile.medicoNombre) {
     document.getElementById('medicoLabel').textContent = userProfile.medicoNombre + (userProfile.medicoEsp ? ` · ${userProfile.medicoEsp}` : '');
   }
-  if (userProfile.photoURL) showProfilePhoto(userProfile.photoURL);
+  const photo = userProfile.photoURL || currentUser?.photoURL || '';
+  if (photo) showProfilePhoto(photo);
 }
 
 function todayKey() { return new Date().toISOString().slice(0,10); }
@@ -1269,6 +1438,124 @@ function showProfilePhoto(url) {
   document.getElementById('headerAvatar').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
 }
 
+// ── CHARTS ──────────────────────────────────────
+let _chartPeriod = 7;
+let _chartTendencia = null, _chartFrecuencia = null, _chartIntensidad = null;
+
+function setChartPeriod(days, btn) {
+  _chartPeriod = days;
+  document.querySelectorAll('.chart-period button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildCharts();
+}
+
+async function buildCharts() {
+  const snap = await db.collection('patients').doc(currentUser.uid)
+    .collection('logs').orderBy('date','desc').limit(_chartPeriod).get();
+  const logs = snap.docs.map(d => d.data()).reverse();
+
+  // — Tendencia: síntomas por día —
+  const labels = logs.map(l => {
+    const d = new Date(l.date + 'T12:00:00');
+    return d.toLocaleDateString('es-MX', { day:'numeric', month:'short' });
+  });
+  const counts = logs.map(l => (l.symptoms||[]).length);
+  const intensities = logs.map(l => (l.symptoms||[]).reduce((a,s) => a + (s.intensity||1), 0));
+
+  const ctxT = document.getElementById('chartTendencia').getContext('2d');
+  if (_chartTendencia) _chartTendencia.destroy();
+  _chartTendencia = new Chart(ctxT, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Síntomas',
+        data: counts,
+        borderColor: '#E91E8C',
+        backgroundColor: 'rgba(233,30,140,0.12)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#E91E8C',
+        pointRadius: 4,
+        tension: 0.4,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: 'rgba(255,255,255,0.4)', font: { family: 'Lexend', size: 10 } }, grid: { color: 'rgba(255,255,255,0.06)' } },
+        y: { ticks: { color: 'rgba(255,255,255,0.4)', font: { family: 'Lexend', size: 10 }, stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.06)' }, beginAtZero: true }
+      }
+    }
+  });
+
+  // — Frecuencia por síntoma —
+  const freq = {};
+  logs.forEach(l => (l.symptoms||[]).forEach(s => { freq[s.id] = (freq[s.id]||0) + 1; }));
+  const sorted = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0,8);
+  const symLabels = sorted.map(([id]) => (SYMPTOM_MAP[id]?.icon||'') + ' ' + (SYMPTOM_MAP[id]?.label||id));
+  const symCounts = sorted.map(([,c]) => c);
+  const barColors = ['#E91E8C','#4ECBCA','#a78bfa','#fb923c','#E91E8C','#4ECBCA','#a78bfa','#fb923c'];
+
+  const ctxF = document.getElementById('chartFrecuencia').getContext('2d');
+  if (_chartFrecuencia) _chartFrecuencia.destroy();
+  _chartFrecuencia = new Chart(ctxF, {
+    type: 'bar',
+    data: {
+      labels: symLabels,
+      datasets: [{
+        data: symCounts,
+        backgroundColor: barColors.map(c => c + '99'),
+        borderColor: barColors,
+        borderWidth: 1.5,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: 'rgba(255,255,255,0.4)', font: { family: 'Lexend', size: 10 }, stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.06)' }, beginAtZero: true },
+        y: { ticks: { color: 'rgba(255,255,255,0.65)', font: { family: 'Lexend', size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  // — Intensidad acumulada —
+  const intFreq = {};
+  logs.forEach(l => (l.symptoms||[]).forEach(s => { intFreq[s.id] = (intFreq[s.id]||0) + (s.intensity||1); }));
+  const intSorted = Object.entries(intFreq).sort((a,b) => b[1]-a[1]).slice(0,6);
+  const intLabels = intSorted.map(([id]) => SYMPTOM_MAP[id]?.icon + ' ' + (SYMPTOM_MAP[id]?.label||id));
+  const intVals   = intSorted.map(([,v]) => v);
+
+  const ctxI = document.getElementById('chartIntensidad').getContext('2d');
+  if (_chartIntensidad) _chartIntensidad.destroy();
+  _chartIntensidad = new Chart(ctxI, {
+    type: 'doughnut',
+    data: {
+      labels: intLabels,
+      datasets: [{
+        data: intVals,
+        backgroundColor: ['rgba(233,30,140,0.75)','rgba(78,203,202,0.75)','rgba(167,139,250,0.75)','rgba(251,146,60,0.75)','rgba(244,114,182,0.75)','rgba(52,211,153,0.75)'],
+        borderColor: 'rgba(255,255,255,0.08)',
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true, position: 'bottom',
+          labels: { color: 'rgba(255,255,255,0.6)', font: { family: 'Lexend', size: 10 }, boxWidth: 10, padding: 10 }
+        }
+      },
+      cutout: '60%',
+    }
+  });
+}
+
 async function loadPersonalizedContent() {
   const container = document.getElementById('paraHoyCards');
   if (!container) return;
@@ -1335,6 +1622,7 @@ function goTo(screen, btn) {
   window.scrollTo(0,0);
   if (screen === 'inicio')    loadPersonalizedContent();
   if (screen === 'progreso')  buildProgressScreen();
+  if (screen === 'graficas')  buildCharts();
   if (screen === 'historial') buildHistorial();
   if (screen === 'registrar') {
     const isHisterTotal = (userProfile.stage || '').includes('histerectomía total');
