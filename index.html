@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>MenoTrack C-Tech</title>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -18,28 +18,35 @@
   --pink-mid:    #D4177F;
   --pink-light:  #FF69B4;
   --pink-pale:   #FFD6EC;
-  --pink-bg:     rgba(233,30,140,0.12);
-  --pink-glow:   rgba(233,30,140,0.28);
+  --pink-bg:     rgba(233,30,140,0.10);
+  --pink-glow:   rgba(233,30,140,0.25);
   --teal:        #4ECBCA;
   --teal-dark:   #3aadac;
-  --teal-bg:     rgba(78,203,202,0.15);
+  --teal-bg:     rgba(78,203,202,0.13);
+  --navy:        #1A3A5C;
+  /* Light theme tokens */
+  --bg:          #F0F2F5;
+  --bg-card:     #FFFFFF;
+  --text:        #1A1A2E;
+  --text-muted:  #8A94A6;
+  --text-soft:   #4A5568;
+  --border-l:    rgba(0,0,0,0.07);
+  --shadow-card: 0 2px 18px rgba(0,0,0,0.07);
+  --shadow-lg:   0 8px 30px rgba(0,0,0,0.11);
+  /* Keep dark refs for auth screen */
   --dark:        #0d0010;
   --dark-2:      #1a0025;
   --dark-card:   rgba(255,255,255,0.07);
-  --dark-card-h: rgba(255,255,255,0.11);
   --border:      rgba(233,30,140,0.22);
   --border-w:    rgba(255,255,255,0.10);
-  --text:        #ffffff;
-  --text-muted:  rgba(255,255,255,0.60);
-  --text-soft:   rgba(255,255,255,0.82);
-  --radius:      16px;
-  --radius-sm:   10px;
+  --radius:      18px;
+  --radius-sm:   12px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Lexend', sans-serif;
-  background: var(--dark);
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
   color: var(--text);
   max-width: 430px;
   margin: 0 auto;
@@ -476,6 +483,184 @@ textarea { resize: none; }
 .brand-footer span { color: var(--pink-light); font-weight: 600; }
 #photoInput { display: none; }
 
+/* ══ LIGHT THEME OVERRIDES ════════════════════════════════════════════ */
+
+/* App header — white sticky bar */
+.app-header {
+  background: var(--bg) !important;
+  border-bottom: 1px solid var(--border-l) !important;
+  backdrop-filter: none !important;
+}
+.greeting-hello { color: var(--text) !important; }
+.greeting-hello .g-name { color: var(--pink) !important; }
+.greeting-date-sub { color: var(--text-muted) !important; }
+.header-avatar-btn {
+  background: var(--pink-pale) !important;
+  border-color: rgba(233,30,140,0.2) !important;
+}
+
+/* Cards — white with shadow */
+.card {
+  background: var(--bg-card) !important;
+  border: none !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+.card-title { color: var(--text-muted) !important; }
+.card-title .dot { background: var(--pink) !important; }
+.card-title .dot.teal { background: var(--teal) !important; }
+
+/* Quick symptom buttons */
+.quick-btn {
+  background: #F5F7FA !important;
+  border: 1.5px solid #E8ECF2 !important;
+}
+.quick-btn.active {
+  background: var(--pink-bg) !important;
+  border-color: rgba(233,30,140,0.35) !important;
+}
+.quick-btn .q-label { color: var(--text-soft) !important; }
+.quick-btn.active .q-label { color: var(--pink) !important; }
+.quick-btn .q-icon { font-size: 22px !important; }
+
+/* Insight card */
+.insight-card {
+  background: linear-gradient(135deg, #FFF0F8 0%, #F0FBFB 100%) !important;
+  border: 1px solid rgba(233,30,140,0.12) !important;
+}
+.insight-card .tag {
+  background: rgba(233,30,140,0.10) !important;
+  color: var(--pink) !important;
+  border-color: rgba(233,30,140,0.2) !important;
+}
+.insight-card p { color: var(--text-soft) !important; }
+.insight-card strong { color: var(--pink) !important; }
+
+/* Alert banner */
+.alert-banner {
+  background: #FFF8E1 !important;
+  border-color: #FFD54F !important;
+}
+.alert-banner .a-text { color: #5D4037 !important; }
+.alert-banner strong { color: #E65100 !important; }
+
+/* Save status */
+.save-status span { color: var(--text-muted) !important; }
+
+/* Pill toggle (registro screen) */
+.pill-toggle {
+  background: #E8ECF2 !important;
+  border-color: transparent !important;
+}
+.pill-toggle button { color: var(--text-muted) !important; }
+.pill-toggle button.active { background: var(--pink) !important; color: white !important; }
+
+/* Stats chips */
+.stat-chip {
+  background: #F5F7FA !important;
+  border-color: #E8ECF2 !important;
+}
+.stat-chip .val { color: var(--text) !important; }
+.stat-chip .lbl { color: var(--text-muted) !important; }
+
+/* History items */
+.history-item {
+  background: var(--bg-card) !important;
+  border-color: #E8ECF2 !important;
+  box-shadow: var(--shadow-card) !important;
+}
+.history-date-box {
+  background: var(--pink-bg) !important;
+  border-color: rgba(233,30,140,0.2) !important;
+}
+.history-date-box .day { color: var(--text) !important; }
+.history-date-box .month { color: var(--pink) !important; }
+.h-title { color: var(--text) !important; }
+.h-notes { color: var(--text-muted) !important; }
+.s-tag { background: #F0F2F5 !important; color: var(--text-soft) !important; border-color: #E0E4ED !important; }
+.s-tag.high { background: var(--pink-bg) !important; color: var(--pink) !important; border-color: rgba(233,30,140,0.25) !important; }
+.s-tag.med { background: #FFF3E0 !important; color: #E65100 !important; border-color: #FFCC80 !important; }
+
+/* Form inputs */
+textarea, input[type="text"], input[type="number"], select {
+  background: #F5F7FA !important;
+  border-color: #E0E4ED !important;
+  color: var(--text) !important;
+}
+textarea::placeholder, input::placeholder { color: var(--text-muted) !important; }
+textarea:focus, input:focus, select:focus {
+  border-color: var(--pink) !important;
+  background: #FFF0F8 !important;
+}
+
+/* Share card */
+.share-card {
+  background: linear-gradient(135deg, #FFF0F8 0%, #F0FBFB 100%) !important;
+  border-color: rgba(233,30,140,0.15) !important;
+}
+.share-card h3 { color: var(--text) !important; }
+.share-card p { color: var(--text-soft) !important; }
+
+/* Setting rows (perfil) */
+.setting-row { border-bottom-color: #F0F2F5 !important; }
+.s-title { color: var(--text) !important; }
+.s-sub { color: var(--text-muted) !important; }
+.setting-arrow { color: #D0D5E0 !important; }
+
+/* Profile */
+.profile-avatar-large {
+  background: var(--pink-pale) !important;
+  border-color: rgba(233,30,140,0.2) !important;
+}
+.profile-name { color: var(--text) !important; }
+.profile-sub { color: var(--text-muted) !important; }
+
+/* Modal */
+.modal-sheet {
+  background: var(--bg-card) !important;
+  border-color: #E0E4ED !important;
+}
+.modal-handle { background: #D0D5E0 !important; }
+.modal-title { color: var(--text) !important; }
+
+/* Disclaimer */
+.disclaimer {
+  border-left-color: rgba(233,30,140,0.25) !important;
+  background: #FFF8FC !important;
+  color: var(--text-muted) !important;
+}
+
+/* Brand footer */
+.brand-footer { color: #BCC3CE !important; }
+.brand-footer span { color: var(--pink) !important; }
+
+/* Week bar chart */
+.wday-label { color: var(--text-muted) !important; }
+.wday-bar { background: rgba(78,203,202,0.4) !important; }
+.wday-bar.today { background: var(--pink) !important; }
+
+/* Empty states */
+.empty-state { color: var(--text-muted) !important; }
+
+/* Ring info */
+.ring-info h3 { color: var(--text) !important; }
+.ring-info p { color: var(--text-soft) !important; }
+
+/* Btn primary keeps pink */
+.btn-primary { font-family: 'Nunito', sans-serif !important; }
+.btn-secondary {
+  background: #F0F2F5 !important;
+  color: var(--text-soft) !important;
+  border-color: #E0E4ED !important;
+  font-family: 'Nunito', sans-serif !important;
+}
+
+/* Auth card labels */
+.auth-field label { color: var(--text-muted) !important; }
+
+/* Screen background */
+.screen { background: transparent !important; }
+
 /* ══ DISEÑO v2 — mobile card UI ═══════════════════════════════════════ */
 
 /* Header greeting */
@@ -555,12 +740,33 @@ textarea { resize: none; }
 .ptcard-foot { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 10px; }
 .ptcard-icon { position: absolute; bottom: 10px; right: 12px; font-size: 24px; opacity: 0.45; }
 
-/* Nav pill tweaks */
-.bottom-nav { padding: 8px 14px 20px !important; background: rgba(6,0,12,0.98) !important; border-top: 1px solid rgba(255,255,255,0.05) !important; }
+/* Nav — light white */
+.bottom-nav { padding: 8px 14px 24px !important; background: rgba(255,255,255,0.96) !important; border-top: 1px solid #EEF0F4 !important; backdrop-filter: blur(16px) !important; box-shadow: 0 -4px 20px rgba(0,0,0,0.06) !important; }
 .nav-item { border-radius: 50px !important; padding: 8px 4px 6px !important; }
-.nav-item.active { background: rgba(233,30,140,0.13) !important; }
-.nav-item.active .label { color: var(--pink) !important; font-weight: 700 !important; }
-.nav-item .icon { font-size: 19px !important; }
+.nav-item .label { color: #9AA3B2 !important; font-size: 10px !important; font-weight: 600 !important; font-family: 'Nunito', sans-serif !important; }
+.nav-item .icon { font-size: 20px !important; }
+.nav-item.active { background: var(--pink-bg) !important; }
+.nav-item.active .label { color: var(--pink) !important; font-weight: 800 !important; }
+
+/* Week strip — light circles */
+.wday-circle { background: #EEF0F5 !important; border-color: #E0E4ED !important; color: #9AA3B2 !important; }
+.wday-circle.today { background: #1A1A2E !important; color: #fff !important; border-color: transparent !important; box-shadow: 0 4px 12px rgba(26,26,46,0.22) !important; }
+.wday-circle.has-log:not(.today) { background: var(--pink-bg) !important; border-color: rgba(233,30,140,0.22) !important; color: var(--pink) !important; }
+.wday-circle.today.has-log { background: var(--pink) !important; color: #fff !important; box-shadow: 0 4px 14px var(--pink-glow) !important; border-color: transparent !important; }
+.wday-name { color: #BCC3CE !important; }
+.wday-dot.vis { background: var(--teal) !important; }
+
+/* Daily card — solid teal vibrante */
+.daily-card { background: linear-gradient(135deg, #4ECBCA 0%, #3aadac 100%) !important; box-shadow: 0 10px 32px rgba(78,203,202,0.38) !important; }
+.daily-card::after { background: radial-gradient(circle at 80% 30%, rgba(255,255,255,0.22) 0%, transparent 55%) !important; }
+.daily-label { color: rgba(0,50,50,0.52) !important; }
+.daily-label::before { background: rgba(0,0,0,0.2) !important; box-shadow: none !important; }
+.daily-title { color: #fff !important; text-shadow: 0 2px 8px rgba(0,0,0,0.12) !important; }
+.daily-sub { color: rgba(255,255,255,0.8) !important; }
+
+/* Nunito everywhere */
+body, button, input, select, textarea { font-family: 'Nunito', sans-serif !important; }
+
 /* ══ END DISEÑO v2 ══════════════════════════════════════════════════════ */
 </style>
 </head>
