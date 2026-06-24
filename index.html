@@ -664,6 +664,22 @@ textarea:focus, input:focus, select:focus {
 /* Auth card labels */
 .auth-field label { color: var(--text-muted) !important; }
 
+/* Auth screen — light mode */
+#authScreen { background: linear-gradient(160deg, #F0F2F5 0%, #FFF0F8 100%) !important; }
+#onboardingScreen { background: #F0F2F5 !important; }
+.auth-card { background: rgba(255,255,255,0.92) !important; border-color: rgba(233,30,140,0.15) !important; box-shadow: 0 8px 32px rgba(0,0,0,0.10) !important; }
+.auth-tabs { background: #F0F2F5 !important; }
+.auth-tab { color: var(--text-muted) !important; }
+.auth-field input, .auth-field select { background: #F5F7FA !important; border-color: #E0E4ED !important; color: var(--text) !important; }
+.auth-field input::placeholder { color: #BCC3CE !important; }
+.auth-field input:focus, .auth-field select:focus { background: #FFF0F8 !important; border-color: var(--pink) !important; }
+.auth-field select option { background: #fff !important; color: #1A1A2E !important; }
+.auth-divider::before, .auth-divider::after { background: #E0E4ED !important; }
+.auth-divider span { color: #BCC3CE !important; }
+.auth-disclaimer { color: var(--text-muted) !important; }
+.auth-headline { color: var(--text) !important; }
+.auth-sub { color: var(--text-soft) !important; }
+
 /* Screen background */
 .screen { background: transparent !important; }
 
@@ -854,6 +870,20 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
   .ring-info p { color: rgba(255,255,255,0.75) !important; }
   .btn-secondary { background: rgba(255,255,255,0.07) !important; color: rgba(255,255,255,0.80) !important; border-color: rgba(255,255,255,0.09) !important; }
   .auth-field label { color: rgba(255,255,255,0.55) !important; }
+  /* Auth screen — dark mode */
+  #authScreen { background: #0d0010 !important; }
+  #onboardingScreen { background: #0d0010 !important; }
+  .auth-card { background: rgba(20,0,30,0.82) !important; border-color: rgba(233,30,140,0.22) !important; box-shadow: none !important; }
+  .auth-tabs { background: rgba(255,255,255,0.06) !important; }
+  .auth-tab { color: rgba(255,255,255,0.55) !important; }
+  .auth-field input, .auth-field select { background: rgba(255,255,255,0.08) !important; border-color: rgba(255,255,255,0.10) !important; color: #ffffff !important; }
+  .auth-field input::placeholder { color: rgba(255,255,255,0.30) !important; }
+  .auth-field select option { background: #1a0025 !important; color: #ffffff !important; }
+  .auth-divider::before, .auth-divider::after { background: rgba(255,255,255,0.12) !important; }
+  .auth-divider span { color: rgba(255,255,255,0.30) !important; }
+  .auth-disclaimer { color: rgba(255,255,255,0.35) !important; }
+  .auth-headline { color: #ffffff !important; }
+  .auth-sub { color: rgba(255,255,255,0.55) !important; }
 
   /* Nav oscuro */
   .bottom-nav { background: rgba(6,0,12,0.97) !important; border-top-color: rgba(255,255,255,0.05) !important; box-shadow: none !important; }
