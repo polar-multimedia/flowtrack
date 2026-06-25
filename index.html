@@ -1895,6 +1895,7 @@ async function saveQuickNoSyms() {
     setSaveStatus('saved','✅ Sin síntomas guardado para hoy');
     document.querySelectorAll('#quickGrid .quick-btn').forEach(b => b.classList.remove('active'));
     updateRing(0); buildWeekStrip(); refreshNotifications();
+    setTimeout(collapseRegistroRapido, 600);
   } catch(e) { setSaveStatus('error','❌ ' + e.message); }
 }
 
@@ -1934,6 +1935,7 @@ async function saveQuickLog() {
     setSaveStatus('saved', `✅ ${symptoms.length} síntoma${symptoms.length!==1?'s':''} guardado${symptoms.length!==1?'s':''}`);
     showToast('✅ Registro guardado');
     buildWeekStrip(); buildProgressScreen(); buildHistorial();
+    setTimeout(collapseRegistroRapido, 600);
   } catch(e) { setSaveStatus('error','Error al guardar'); showToast('❌ ' + e.message); }
   btn.disabled = false;
 }
@@ -2607,6 +2609,10 @@ async function buildWeekStrip() {
 }
 
 function toggleQuick(btn) { btn.classList.toggle('active'); }
+function collapseRegistroRapido() {
+  document.getElementById('rqHeader')?.classList.remove('open');
+  document.getElementById('rqBody')?.classList.remove('open');
+}
 function toggleRegistroRapido() {
   const h = document.getElementById('rqHeader');
   const b = document.getElementById('rqBody');
