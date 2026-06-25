@@ -924,6 +924,27 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
   .daily-title { color: #fff !important; text-shadow: none !important; }
   .daily-sub { color: rgba(255,255,255,0.62) !important; }
 }
+/* ── Date chip selector ── */
+.date-chip-bar{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-bottom:2px}
+.date-chip-bar::-webkit-scrollbar{display:none}
+.date-chip{flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:8px 10px;border-radius:12px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent;min-width:52px}
+.date-chip .dc-dow{font-size:10px;font-weight:700;letter-spacing:.3px;color:var(--text-muted);text-transform:uppercase}
+.date-chip .dc-day{font-size:18px;font-weight:800;color:var(--text);line-height:1.1;margin:2px 0}
+.date-chip .dc-dot{width:5px;height:5px;border-radius:50%;background:transparent;transition:background .18s}
+.date-chip.selected{border-color:var(--teal);background:rgba(78,203,202,.12)}
+.date-chip.selected .dc-dow{color:var(--teal)}
+.date-chip.selected .dc-day{color:var(--teal)}
+.date-chip.has-data .dc-dot{background:var(--pink)}
+.date-chip.selected.has-data .dc-dot{background:var(--teal)}
+.date-chip.is-today .dc-dow::after{content:' HOY';font-size:8px;color:var(--pink)}
+.reg-date-label{font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.reg-date-label span{color:var(--teal);font-size:12px}
+/* "Sin síntomas" button */
+.btn-no-syms{width:100%;padding:14px 16px;border-radius:14px;border:1.5px dashed rgba(78,203,202,.35);background:rgba(78,203,202,.05);color:var(--teal);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:4px;-webkit-tap-highlight-color:transparent}
+.btn-no-syms:active{background:rgba(78,203,202,.14);border-color:rgba(78,203,202,.6)}
+.btn-no-syms.confirmed{background:rgba(78,203,202,.14);border-style:solid;border-color:var(--teal)}
+.no-syms-quick{width:100%;padding:11px 14px;border-radius:12px;border:1px dashed rgba(78,203,202,.28);background:rgba(78,203,202,.04);color:var(--teal);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:6px;-webkit-tap-highlight-color:transparent}
+.no-syms-quick:active{background:rgba(78,203,202,.12)}
 /* ══ END DARK MODE ══════════════════════════════════════════════════════ */
 
 /* ── CAMPANA DE NOTIFICACIONES ── */
@@ -1204,6 +1225,10 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
             </button>
           </div>
           <div class="save-status"><div class="save-dot" id="saveDot"></div><span id="saveStatusText"></span></div>
+          <button class="no-syms-quick" onclick="saveQuickNoSyms()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Hoy estuve bien — sin síntomas
+          </button>
           <button class="btn-save-aqua" onclick="saveQuickLog()" id="btnSaveQuick">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             Guardar registro del día
@@ -1245,6 +1270,16 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
   <!-- REGISTRAR -->
   <div class="screen" id="screen-registrar">
     <div style="margin-top:14px;"></div>
+
+    <!-- Selector de fecha -->
+    <div class="card" style="padding:12px 14px 8px;">
+      <div class="reg-date-label">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        ¿Para qué día es este registro? &nbsp;<span id="regDateLabel">Hoy</span>
+      </div>
+      <div class="date-chip-bar" id="dateChipBar"><!-- se llena con JS --></div>
+    </div>
+
     <div class="pill-toggle">
       <button class="active" onclick="setRegView('sintomas',this)">Síntomas</button>
       <button onclick="setRegView('medicion',this)">Mediciones</button>
@@ -1252,6 +1287,12 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
     </div>
 
     <div id="reg-sintomas">
+      <!-- Sin síntomas -->
+      <button class="btn-no-syms" id="btnNoSyms" onclick="saveSinSintomas()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Estuve bien — sin síntomas este día
+      </button>
+
       <div class="card">
         <div class="card-title"><span class="dot"></span>Síntomas vasomotores</div>
         <div id="groupVasom"></div>
@@ -1268,7 +1309,10 @@ body, button, input, select, textarea { font-family: 'Nunito', sans-serif !impor
         <label class="form-label">Notas del día (opcional)</label>
         <textarea rows="3" id="notasDia" placeholder="Ej: Dormí mal, tuve un día estresante..."></textarea>
       </div>
-      <button class="btn-primary" onclick="saveFullLog()">💾 Guardar registro completo</button>
+      <button class="btn-primary" onclick="saveFullLog()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Guardar registro completo
+      </button>
     </div>
 
     <div id="reg-medicion" style="display:none;">
@@ -1731,6 +1775,128 @@ function updateHeaderUser() {
 }
 
 function todayKey() { return new Date().toISOString().slice(0,10); }
+function activeLogDate() { return window._logDate || todayKey(); }
+
+/* ── SELECTOR DE FECHA ── */
+async function buildDateChips() {
+  window._logDate = window._logDate || todayKey();
+  const bar = document.getElementById('dateChipBar');
+  if (!bar) return;
+  const today = new Date();
+  // Buscar qué fechas ya tienen log (últimos 7 días)
+  const existingDates = new Set();
+  try {
+    const snap = await db.collection('patients').doc(currentUser.uid)
+      .collection('logs').orderBy('date','desc').limit(7).get();
+    snap.docs.forEach(d => existingDates.add(d.data().date));
+  } catch(e) {}
+  const DOW = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const chips = Array.from({length:7}, (_,i) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() - (6 - i));
+    return d;
+  });
+  bar.innerHTML = chips.map(d => {
+    const dStr = d.toISOString().slice(0,10);
+    const isToday = dStr === todayKey();
+    const isSelected = dStr === activeLogDate();
+    const hasData = existingDates.has(dStr);
+    return `<div class="date-chip${isToday?' is-today':''}${isSelected?' selected':''}${hasData?' has-data':''}"
+      onclick="setLogDate('${dStr}')" data-date="${dStr}">
+      <span class="dc-dow">${isToday?'HOY':DOW[d.getDay()]}</span>
+      <span class="dc-day">${d.getDate()}</span>
+      <span class="dc-dot"></span>
+    </div>`;
+  }).join('');
+  updateRegDateLabel();
+}
+
+function setLogDate(dateStr) {
+  window._logDate = dateStr;
+  document.querySelectorAll('.date-chip').forEach(c => {
+    c.classList.toggle('selected', c.dataset.date === dateStr);
+  });
+  updateRegDateLabel();
+  loadDataForRegDate(dateStr);
+  // Resetear estado del botón "sin síntomas"
+  const btn = document.getElementById('btnNoSyms');
+  if (btn) btn.classList.remove('confirmed');
+}
+
+function updateRegDateLabel() {
+  const el = document.getElementById('regDateLabel');
+  if (!el) return;
+  const d = activeLogDate();
+  if (d === todayKey()) { el.textContent = 'Hoy'; return; }
+  const dt = new Date(d + 'T12:00:00');
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+  if (d === yesterday.toISOString().slice(0,10)) { el.textContent = 'Ayer'; return; }
+  el.textContent = dt.toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'});
+}
+
+async function loadDataForRegDate(dateStr) {
+  // Limpiar selección actual de síntomas
+  document.querySelectorAll('[id^="check_"]').forEach(el => {
+    el.dataset.on = '0';
+    el.querySelector?.('circle')?.setAttribute('fill','transparent');
+  });
+  document.getElementById('notasDia').value = '';
+  try {
+    const doc = await db.collection('patients').doc(currentUser.uid)
+      .collection('logs').doc(dateStr).get();
+    if (!doc.exists) return;
+    const data = doc.data();
+    // Marcar síntomas guardados
+    (data.symptoms || []).forEach(s => {
+      const el = document.getElementById('check_' + s.id);
+      if (el) { el.dataset.on = '1'; el.querySelector('circle')?.setAttribute('fill','currentColor'); }
+    });
+    if (data.notes) document.getElementById('notasDia').value = data.notes;
+    // Si tenía sinSintomas, marcar el botón
+    if (data.sinSintomas) {
+      const btn = document.getElementById('btnNoSyms');
+      if (btn) btn.classList.add('confirmed');
+    }
+  } catch(e) {}
+}
+
+/* ── SIN SÍNTOMAS ── */
+async function saveSinSintomas() {
+  const dateKey = activeLogDate();
+  const btn = document.getElementById('btnNoSyms');
+  try {
+    await db.collection('patients').doc(currentUser.uid)
+      .collection('logs').doc(dateKey).set(
+        { date: dateKey, symptoms: [], sinSintomas: true, updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      );
+    if (btn) btn.classList.add('confirmed');
+    // Desmarcar todos los síntomas visualmente
+    document.querySelectorAll('[id^="check_"]').forEach(el => {
+      el.dataset.on = '0';
+      el.querySelector('circle')?.setAttribute('fill','transparent');
+    });
+    const label = dateKey === todayKey() ? 'hoy' : 'ese día';
+    showToast(`✅ Sin síntomas guardado para ${label}`);
+    // Actualizar chip a has-data
+    document.querySelector(`.date-chip[data-date="${dateKey}"]`)?.classList.add('has-data');
+    if (dateKey === todayKey()) { updateRing(0); buildWeekStrip(); refreshNotifications(); }
+  } catch(e) { showToast('❌ ' + e.message); }
+}
+
+async function saveQuickNoSyms() {
+  const dateKey = todayKey();
+  try {
+    await db.collection('patients').doc(currentUser.uid)
+      .collection('logs').doc(dateKey).set(
+        { date: dateKey, symptoms: [], sinSintomas: true, updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      );
+    setSaveStatus('saved','✅ Sin síntomas guardado para hoy');
+    document.querySelectorAll('#quickGrid .quick-btn').forEach(b => b.classList.remove('active'));
+    updateRing(0); buildWeekStrip(); refreshNotifications();
+  } catch(e) { setSaveStatus('error','❌ ' + e.message); }
+}
 
 async function loadTodayData() {
   const doc = await db.collection('patients').doc(currentUser.uid).collection('logs').doc(todayKey()).get();
@@ -1760,8 +1926,9 @@ async function saveQuickLog() {
   btn.disabled = true;
   setSaveStatus('saving','Guardando...');
   const symptoms = [...document.querySelectorAll('#quickGrid .quick-btn.active')].map(b => ({ id: b.dataset.sym, intensity: 1, ts: Date.now() }));
+  const dateKey = todayKey();
   try {
-    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(todayKey()).set({ date: todayKey(), symptoms, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(dateKey).set({ date: dateKey, symptoms, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
     updateRing(symptoms.length);
     updateTodaySummary(symptoms);
     setSaveStatus('saved', `✅ ${symptoms.length} síntoma${symptoms.length!==1?'s':''} guardado${symptoms.length!==1?'s':''}`);
@@ -1826,17 +1993,25 @@ async function saveFullLog() {
     return { id, intensity: dot ? parseInt(dot.dataset.val) : 1, ts: Date.now() };
   });
   const notes = document.getElementById('notasDia').value.trim();
+  const dateKey = activeLogDate();
+  const isBackfill = dateKey !== todayKey();
   try {
-    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(todayKey()).set({ date: todayKey(), symptoms, notes, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
-    showToast(`✅ ${symptoms.length} síntomas guardados`);
+    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(dateKey).set(
+      { date: dateKey, symptoms, notes, sinSintomas: false, updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+      { merge: true }
+    );
+    const label = isBackfill ? ` para ${new Date(dateKey+'T12:00:00').toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'})}` : '';
+    showToast(`✅ ${symptoms.length} síntoma${symptoms.length!==1?'s':''} guardado${symptoms.length!==1?'s':''}${label}`);
+    document.querySelector(`.date-chip[data-date="${dateKey}"]`)?.classList.add('has-data');
+    if (!isBackfill) { loadTodayData(); }
+    buildProgressScreen(); buildHistorial(); buildWeekStrip(); refreshNotifications();
     goTo('inicio', document.querySelector('[data-nav=inicio]'));
-    loadTodayData(); buildProgressScreen(); buildHistorial();
   } catch(e) { showToast('❌ ' + e.message); }
 }
 
 async function saveMediciones() {
   try {
-    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(todayKey()).set({
+    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(activeLogDate()).set({
       peso: document.getElementById('mPeso').value || null,
       horasSueno: document.getElementById('mSueno').value || null,
       energia: document.getElementById('mEnergia').value || null,
@@ -1854,7 +2029,7 @@ async function saveMedicacion() {
   if (document.getElementById('medMagnesio').checked) meds.push('Magnesio');
   if (document.getElementById('medTRH').checked)      meds.push('TRH');
   try {
-    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(todayKey()).set({ medicacion: meds, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    await db.collection('patients').doc(currentUser.uid).collection('logs').doc(activeLogDate()).set({ medicacion: meds, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
     showToast('✅ Medicación guardada');
   } catch(e) { showToast('❌ ' + e.message); }
 }
@@ -2379,6 +2554,7 @@ function goTo(screen, btn) {
   if (screen === 'graficas')  buildCharts();
   if (screen === 'historial') buildHistorial();
   if (screen === 'registrar') {
+    buildDateChips();
     const isHisterTotal = (userProfile.stage || '').includes('histerectomía total');
     const cicloCard = document.getElementById('cicloCard');
     const mCiclo = document.getElementById('mCiclo');
